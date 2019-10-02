@@ -42,8 +42,7 @@ const LoginPage = {
             var app = this;
             var user = storage.get("user");
             if(user && user.hash) 
-                router.replace("/articles");
-                //router.replace("/sales");
+                router.replace("/sales");
         },
         login() {
             var app = this;
@@ -54,8 +53,7 @@ const LoginPage = {
                         storage.set("user", { og: result.og, hash: result.hash });
                         app.invalid = false;
                         app.loading = false;
-                        router.replace("/articles");
-                        //router.replace("/sales");
+                        router.replace("/sales");
                     }
                     else
                         app.loginfailed();
