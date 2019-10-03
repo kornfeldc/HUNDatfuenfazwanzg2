@@ -39,7 +39,7 @@ Vue.component('sale-person', {
             var app = this;
             var credit = app.person.credit || 0;
             // if(app.sale) {
-            //     var creditSaleArticle = (app.sale.articles||[]).find(sa => sa.article._id === "credit");
+            //     var creditSaleArticle = (app.sale.articles||[]).find(sa => sa.article.id === "credit");
             //     if(creditSaleArticle)
             //         credit += creditSaleArticle.article.price;
             // }

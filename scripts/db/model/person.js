@@ -77,3 +77,11 @@ class Person extends BaseModel {
         return this.sort(ret, p);
     }    
 }
+
+const barPerson = {
+    id: "bar",
+    fullName: "Barverkauf",
+    nameWithGroup: "Barverkauf",
+    isBar: true,
+    credit: 0
+};

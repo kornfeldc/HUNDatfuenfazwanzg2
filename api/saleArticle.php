@@ -19,9 +19,20 @@ switch($method) {
             $stmt->bind_param("si", $og, $id);
         }
         else {
-            $stmt = $conn->prepare("SELECT * FROM sale_article WHERE og=?");
-            $stmt->bind_param("s", $og);
+            $sql = "SELECT sa.* FROM sale_article sa JOIN sale s ON sa.saleId = s.id WHERE sa.og=?";
+            $b = "s";
+            $p = array($og);
+
+            if(isset($_GET['date'])) {
+                $sql = $sql." and s.date=?";
+                $b = $b."s";
+                array_push($p,$_GET['date']);
+            }
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param($b, $p);
         }
+
         echoQueryAsJson($id, $stmt);
         break;
 

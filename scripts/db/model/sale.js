@@ -15,6 +15,8 @@ class Sale extends BaseModel {
         this.addAdditionalCredit = 0;
         this.usedCredit = false;
 
+        this.articles = [];
+
         this.map = [
             "id","personId", "personName", "saleDate", "payDate", "toPay",
             "toReturn", "inclTip", "given", "articleSum", "addAdditionalCredit", "usedCredit"
@@ -47,10 +49,58 @@ class Sale extends BaseModel {
         return parseInt(moment(this.saleDate, "DD.MM.YYYY").format("YYYYMMDD"),10);
     }
 
+    setPerson(person) {
+        this.personId = person.id;
+        this.personName = person.nameWithGroup || person.fullName;
+    }
+
+    calculate() {
+        var _this = this;
+        var copy = JSON.parse(JSON.stringify(_this.articles));
+        _this.articles = [];
+        copy.filter(c => c.amount > 0).forEach(c => _this.articles.push(c));
+        _this.articleSum = 0;
+        _this.articles.forEach(a => _this.articleSum += a.articlePrice * a.amount);
+    }
+
+    static getOpenedSaleForPerson(person) {
+        var _this = this;
+        return new Promise((resolve,reject) => {
+            resolve(null);
+            // _this.getList().then(allSales => {
+            //     var sale = allSales.find(sale => !sale.isPayed && sale.person._id === person._id);
+            //     resolve(sale);
+            // });
+        });
+    }
+
     static getList(p) {
         return new Promise(resolve => {
             api.get("sale", p).then(result => {
-                resolve(this.fromArray(Sale, result));
+                var sales = this.fromArray(Sale, result);
+                if(p && p.loadArticles) {
+                    SaleArticle.getList(p).then(saleArticles => {
+                        sales.forEach(sale => { 
+                            var sas = saleArticles.filter(sa => sa.saleId == sale.id);
+                            sale.articles = [];
+                            sas.forEach(sa => {
+                                sale.articles.push({
+                                    article: {
+                                        id: sa.articleId,
+                                        title: sa.articleTitle,
+                                        price: sa.articlePrice
+                                    },
+                                    amount: sa.amount
+                                });
+                            });
+
+                            sale.articles = saleArticles.filter(sa => sa.saleId == sale.id);
+                        });
+                        resolve(sales);
+                    });
+                }
+                else
+                    resolve(sales);
             });
         });
     }
@@ -80,4 +130,6 @@ class Sale extends BaseModel {
 
         return this.sort(ret, p);
     }
+
+    
 }

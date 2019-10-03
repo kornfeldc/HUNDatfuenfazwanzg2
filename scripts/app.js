@@ -17,10 +17,10 @@ const router = new VueRouter({
          { path: '/login', component: LoginPage, meta: { title: "Login" } },
          { path: '/', component: LoginPage, meta: { title: "Login" } },
 
-        // { path: '/sale/:id', component: SalePage, meta: { title: "Verkauf" } },
+         { path: '/sale/:id', component: SalePage, meta: { title: "Verkauf" } },
          { path: '/person/:id', component: PersonPage, meta: { title: "Person" } },
          { path: '/article/:id', component: ArticlePage, meta: { title:"Artikel" } },
-        // { path: '/pay/:id', component: PayPage, meta: { title:"Bezahlen" } }
+         { path: '/pay/:id', component: PayPage, meta: { title:"Bezahlen" } }
     ]
 });
 

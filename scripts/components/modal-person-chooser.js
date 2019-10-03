@@ -9,7 +9,7 @@ Vue.component('modal-person-chooser', {
             <button class="delete" aria-label="close" @click="vibrate();cancel();"></button>
         </header>
         <section class="modal-card-body">
-            <search v-model="search" @changed="load" />
+            <search v-model="search" @changed="filter" />
             <div class="tabs" v-if="!search || search.length == 0">
                 <ul>
                     <li v-for="t in types" :class="(tab == t.id ? 'is-active':'')"><a @click="vibrate();tab = t.id;">{{t.shortTitle}}</a></li>
@@ -19,7 +19,7 @@ Vue.component('modal-person-chooser', {
             <v-touch v-on:swipeleft="onSwipe(1,$event)" v-on:swiperight="onSwipe(-1,$event)">
 
                 <person-line :person="barPerson" v-on:click="choose(barPerson)"/>
-                <person-line v-for="entry in persons" :person="entry" v-on:click="choose(entry)" :key="entry._id" mode="chooser"/>
+                <person-line v-for="entry in persons" :person="entry" v-on:click="choose(entry)" :key="entry.id" mode="chooser"/>
 
                 <div v-if="search" class="columns is-mobile is-vcentered hover" @click="vibrate();createPerson();">
                     <div class="column">
@@ -50,12 +50,13 @@ Vue.component('modal-person-chooser', {
             tab: "top",
             resolve: null,
             reject: null,
-            persons: []
+            rawpersons: [],
+            persons: [],
         };
     },
     watch: {
         tab() {
-            this.load();
+            this.filter();
         }
     },
     methods: {
@@ -70,10 +71,15 @@ Vue.component('modal-person-chooser', {
         },
         load() {
             var app = this;
-            Person.getList(app.search, app.tab, "chooser").then(persons => {
-                app.persons = persons;      
+            Person.getList().then(persons => {
+                app.rawpersons = persons;      
+                app.filter();
                 $(app.$refs.modal).addClass("is-active");
             });   
+        },
+        filter() {
+            var app = this;
+            app.persons = Person.getFiltered(app.rawpersons, { search: app.search, tab: app.tab });
         },
         cancel() {
             var app = this;

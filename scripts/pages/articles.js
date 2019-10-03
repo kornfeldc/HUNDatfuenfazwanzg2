@@ -10,7 +10,7 @@ const ArticlesPage = {
                     <li v-for="at in articleTypes" :class="(tab == at.id ? 'is-active':'')"><a @click="vibrate();tab = at.id;">{{at.shortTitle}}</a></li>
                 </ul>
             </div>
-            <article-line v-for="entry in articles" :article="entry" v-on:click="vibrate();open(entry);" :key="entry._id"/>
+            <article-line v-for="entry in articles" :article="entry" v-on:click="vibrate();open(entry);" :key="entry.id"/>
         </div>
         <div class="actions">
             <div class="field">

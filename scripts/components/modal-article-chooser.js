@@ -9,7 +9,7 @@ Vue.component('modal-article-chooser', {
                 <button class="delete" aria-label="close" @click="vibrate();cancel();"></button>
             </header>
             <section class="modal-card-body" v-if="render">
-                <search v-model="search" @changed="load" />
+                <search v-model="search" @changed="filter" />
                 <div class="tabs" v-if="!search || search.length == 0">
                     <ul>
                         <li :class="(tab == 'top' ? 'is-active':'')"><a @click="vibrate();tab = 'top';">TOP</a></li>
@@ -17,7 +17,7 @@ Vue.component('modal-article-chooser', {
                         <li v-for="at in articleTypes" :class="(tab == at.id ? 'is-active':'')"><a @click="vibrate();tab = at.id;">{{at.shortTitle}}</a></li>
                     </ul>
                 </div>
-                <sale-article-line v-for="article in articles" :article="article" :sale="sale" :key="article._id" @modify="(article,amount)=>modify(article,amount)"/>
+                <sale-article-line v-for="article in articles" :article="article" :sale="sale" :key="article.id" @modify="(article,amount)=>modify(article,amount)"/>
             </section>
             <footer class="modal-card-foot">
                 <button-primary @click="vibrate();ok();">OK</button-primary>
@@ -36,6 +36,7 @@ Vue.component('modal-article-chooser', {
             reject: null,
             articleTypes: Article.getTypes(),
             tab: "top",
+            rawarticles: [],
             articles: [],
             modifications: [],
             render: true,
@@ -46,7 +47,7 @@ Vue.component('modal-article-chooser', {
     },
     watch: {
         tab() {
-            this.load();
+            this.filter();
         }
     },
     methods: {
@@ -83,15 +84,20 @@ Vue.component('modal-article-chooser', {
         },
         load() {
             var app = this;
-            Article.getList(app.search, app.tab, app.sale, app.person).then(articles => {
-                app.articles = articles;
+            Article.getList().then(articles => {
+                app.rawarticles = articles;
+                app.filter();
                 $(app.$refs.modal).addClass("is-active");
             });  
         },
+        filter() {
+            var app = this;
+            app.articles = Article.getFiltered(app.rawarticles, { search: app.search, tab: app.tab, person: app.person });
+        },
         modify(article,amount) {
             var app = this;
-            if(app.modifications.find(m => m.article._id === article._id)) 
-                app.modifications.find(m => m.article._id === article._id).amount = amount;
+            if(app.modifications.find(m => m.article.id === article.id)) 
+                app.modifications.find(m => m.article.id === article.id).amount = amount;
             else 
                 app.modifications.push({
                     article: article,

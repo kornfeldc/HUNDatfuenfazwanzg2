@@ -33,18 +33,35 @@ class Article extends BaseModel {
 
     static sort(articles, p) {
         return articles.sort((article1,article2) => {
-            var sortProperty = "title";
-            return article1[sortProperty] < article2[sortProperty] ? -1 : article1[sortProperty] > article2[sortProperty] ? 1 : 0;
+            if(p.tab == "top") {
+                var ac = 0, bc = 0;
+                if(p.person && p.person.topArticleCounts && p.person.topArticleCounts[article1.id])
+                    ac = p.person.topArticleCounts[article1.id];
+                if(p.person && p.person.topArticleCounts && p.person.topArticleCounts[article2.id])
+                    bc = person.topArticleCounts[article2.id];
+                return ac > bc ? -1 : ac < bc ? 1 : 0;
+            }
+            else {
+                var sortProperty = "title";
+                return article1[sortProperty] < article2[sortProperty] ? -1 : article1[sortProperty] > article2[sortProperty] ? 1 : 0;
+            }
         });
     }
 
     static getFiltered(articles, p) {
+
+        //todo: p.person
+
         var ret = articles.filter(article => {
             var x = true;
 
             //filter by tab
             if(p.tab) 
-                x = x && ((p.tab === "favorites" && article.isFavorite === 1) || article.type === p.tab);
+                x = x && (
+                    (p.tab === "favorites" && article.isFavorite === 1) || 
+                    (p.tab === "top" && p.person && p.person.topArticleCounts && p.person.topArticleCounts[article.id] && p.person.topArticleCounts[article.id] > 0) ||
+                    article.type === p.tab
+                );
             x = x && util.search(article.title, p.search);
             return x;
         });

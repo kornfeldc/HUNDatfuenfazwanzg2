@@ -25,7 +25,7 @@ const SalesPage = {
                         <p class="title is-5 has-text-success">{{format(sumPayed)}}</p>
                     </div>
                 </div>
-                <sale-line  :sale="entry" v-on:click="vibrate();open(entry)" :key="entry._id"/>
+                <sale-line  :sale="entry" v-on:click="vibrate();open(entry)" :key="entry.id"/>
             </template>
 
             <div v-if="sales.length === 0" class="px-std columns is-mobile is-vcentered">
@@ -84,7 +84,6 @@ const SalesPage = {
     methods: {
         initDone() {
             var app = this;
-            alert("init done");
             app.load();
 
             // $(document).on("dbChanged", (evt,options) => {
@@ -98,13 +97,13 @@ const SalesPage = {
             var app = this;
             console.log("start load sales");
             app.syncing=true;            
-            Sale.getList({ day: app.day }).then(sales => {
+            Sale.getList({ day: app.day, loadArticles: true }).then(sales => {
                 app.sales = sales;      
                 app.syncing=false;
             }).catch((err) => console.log("error on getting sales", err));
         },
         open(entry) {
-            // router.push({ path: 'sale/'+ (entry && entry._id ? entry._id : '_') });
+            router.push({ path: 'sale/'+ (entry && entry.id ? entry.id : '_') });
         },
         chooseDay() {
             var app = this;

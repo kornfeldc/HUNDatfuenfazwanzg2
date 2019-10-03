@@ -39,7 +39,7 @@ Vue.component('sale-article-line', {
             var app = this;
             var amount = 0;
             if(app.article && app.sale) {
-                var saleArticle = app.saleArticles.find(sa => sa.article._id == app.article._id);
+                var saleArticle = app.saleArticles.find(sa => sa.article.id == app.article.id);
                 if(saleArticle)
                     amount = saleArticle.amount;
             }
@@ -53,18 +53,14 @@ Vue.component('sale-article-line', {
             var app = this;
             if(nr > 0 || app.amount > 0) {
 
-                var saleArticle = app.saleArticles.find(sa => sa.article._id == app.article._id);
+                var saleArticle = app.saleArticles.find(sa => sa.article.id == app.article.id);
                 if(!saleArticle) {
                     saleArticle = {
-                        article: {
-                            _id: app.article._id,
-                            title: app.article.title,
-                            price: app.article.price
-                        },
+                        article: app.article,
                         amount: 0
                     };
                     app.saleArticles.push(saleArticle);
-                    saleArticle = app.saleArticles.find(sa => sa.article._id == app.article._id);
+                    saleArticle = app.saleArticles.find(sa => sa.article.id == app.article.id);
                 }
                     
                 saleArticle.amount += nr;
