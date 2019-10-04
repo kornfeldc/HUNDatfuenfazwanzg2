@@ -17,7 +17,7 @@ const SalePage = {
 
                 <div class="pt-1">&nbsp;</div>
                 <div class="flx col g1 pt-1">
-                    <sale-article-line v-for="saleArticle in sale.articles" mode="sale" :article="saleArticle.article" :sale="sale" @modify="(article,amount)=>modify(article,amount)"/>
+                    <sale-article-line v-for="saleArticle in sale.articles" v-show="saleArticle.amount>0" mode="sale" :article="saleArticle.article" :sale="sale" @modify="(article,amount)=>modify(article,amount)"/>
                 </div>
             
             </div>
@@ -140,11 +140,13 @@ const SalePage = {
         },
         modify(article, amount) {
             var app = this;
+            util.log("modify", { sale: app.sale, article, amount });
             app.sale.articles.find(a => a.article.id === article.id).amount = amount;
             app.calculate();
         },
         calculate() {
             var app = this;
+            util.log("calculate", { sale: app.sale });
             app.sale.calculate();
             app.render = false;
             app.$nextTick(()=>app.render=true);

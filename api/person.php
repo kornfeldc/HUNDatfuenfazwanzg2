@@ -51,7 +51,7 @@ switch($method) {
             $stmt->bind_param("ssiisssis", $firstName, $lastName, $isMember, $mainPersonId, $personGroup, $phone, $email, $id, $og);
         }
 
-        echoExecuteAsJson($stmt);
+        echoExecuteAsJson($conn,$stmt,isInsert());
         break;
 }
 $conn->close();

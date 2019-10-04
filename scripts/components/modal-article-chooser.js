@@ -67,6 +67,7 @@ Vue.component('modal-article-chooser', {
             if(app.sale.articles && app.sale.articles.forEach) {
                 app.sale.articles.forEach(sa => {
                     app.modifications.push({
+                        id: sa.id,
                         article: sa.article,
                         amount: sa.amount
                     });
@@ -100,6 +101,7 @@ Vue.component('modal-article-chooser', {
                 app.modifications.find(m => m.article.id === article.id).amount = amount;
             else 
                 app.modifications.push({
+                    id: "_",
                     article: article,
                     amount: amount
                 });

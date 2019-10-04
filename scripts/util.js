@@ -70,6 +70,8 @@ String.prototype.hashCode = function() {
 };
 
 util = {
+	dateFormat: "YYYY-MM-DD",
+	
 	search: (str, expression) => {
 		if(!expression || expression === "") return true;
 		expression = expression.toLowerCase();
@@ -78,5 +80,9 @@ util = {
 		str = str.toLowerCase();
 
 		return str.indexOf(expression) >= 0;
+	},
+
+	log: (a,b) => {
+		console && console.log(a,b);
 	}
 }

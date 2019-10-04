@@ -1,7 +1,7 @@
 class SaleArticle extends BaseModel {
 
     constructor() {
-        super("sale")
+        super("saleArticle")
         this.id="_";
         this.articleId = null;
         this.articleTitle = "";
@@ -12,9 +12,20 @@ class SaleArticle extends BaseModel {
         this.map = ["id","articleId", "articleTitle", "articlePrice", "amount", "saleId"];
     }
 
-    static getList() {
+    static fromSaleArticle(article,amount,saleArticleId,saleId) {
+        var sa = new SaleArticle();
+        sa.id = saleArticleId || sa.id;
+        sa.articleId = article.id;
+        sa.articleTitle = article.title;
+        sa.articlePrice = article.price;
+        sa.saleId = saleId;
+        sa.amount = amount;
+        return sa;
+    }
+
+    static getList(p) {
         return new Promise(resolve => {
-            api.get("saleArticle").then(result => {
+            api.get("saleArticle",p).then(result => {
                 resolve(this.fromArray(SaleArticle, result));
             });
         });

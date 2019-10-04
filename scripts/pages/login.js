@@ -41,12 +41,14 @@ const LoginPage = {
         load() {
             var app = this;
             var user = storage.get("user");
+            alert("a");
             if(user && user.hash) 
                 router.replace("/sales");
         },
         login() {
             var app = this;
             app.loading=true;
+            alert("b");
             api.login(app.user, app.password)
                 .then((result) => {
                     if(result && result.status === "ok") {

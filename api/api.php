@@ -27,7 +27,7 @@ function boolFromPost($str) {
 
 function valueFromPost($str, $def) {
     $val = $_POST[$str];
-    if(!isset($val))
+    if(!isset($val) || $val == "")
         $val = $def;
     return $val;
 }
@@ -42,18 +42,29 @@ function echoQueryAsJson($id,$stmt) {
     if (!$id) echo ']';
 }
 
-function echoExecuteAsJson($stmt) {
-    if($stmt->execute()) 
-        echoStatus(true, "");
+function echoExecuteAsJson($conn,$stmt,$isInsert) {
+    if($stmt->execute())  {
+        if($isInsert) {
+            $last_id = $conn->insert_id;
+            echoStatus(true, "", $last_id);    
+        }
+        else if(isset($_POST['id']))
+            echoStatus(true, "", $_POST['id']);    
+        else
+            echoStatus(true, "", "");
+
+    }
     else 
-        echoStatus(false, $stmt->error);
+        echoStatus(false, $stmt->error, "");
 }
 
-function echoStatus($ok, $message) {
+function echoStatus($ok, $message, $id) {
     $status = new \stdClass();
     $status->status = $ok ? "ok" : "nok";
     if(isset($message) && $message != "")
         $status->message = $message;
+    if(isset($id) && $id != "")
+        $status->id = $id;
     echo(json_encode($status));
 }
 ?>

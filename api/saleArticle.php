@@ -23,14 +23,20 @@ switch($method) {
             $b = "s";
             $p = array($og);
 
-            if(isset($_GET['date'])) {
-                $sql = $sql." and s.date=?";
+            if(isset($_GET['day'])) {
+                $sql = $sql." and s.saleDate=?";
                 $b = $b."s";
-                array_push($p,$_GET['date']);
+                array_push($p,$_GET['day']);
+            }
+
+            if(isset($_GET['saleId'])) {
+                $sql = $sql." and s.id=?";
+                $b = $b."i";
+                array_push($p,$_GET['saleId']);
             }
 
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param($b, $p);
+            $stmt->bind_param($b, ...$p);
         }
 
         echoQueryAsJson($id, $stmt);
@@ -41,20 +47,24 @@ switch($method) {
         
         $articleId = valueFromPost("articleId", null);
         $articleTitle = valueFromPost("articleTitle", "");
-        $articlePrice = valueFromPost("articlePrice", 0);
-        $amount = valueFromPost("amount", 0);
-        $saleId = valueFromPost("articleId", null);
+        $articlePrice = $_POST["articlePrice"];
+        $amount = $_POST["amount"];
+        $saleId = valueFromPost("saleId", null);
         
-        if(isInsert()) {
+        if(isInsert() && $amount > 0) {
             $stmt = $conn->prepare("INSERT INTO sale_article (og, articleId, articleTitle, articlePrice, amount, saleId) values (?, ?, ?, ?, ?, ?)");
             $stmt->bind_param("sisdii", $og, $articleId, $articleTitle, $articlePrice, $amount, $saleId);
+        }
+        else if($amount == 0) {
+            $stmt = $conn->prepare("DELETE FROM sale_article WHERE id=? and og=?");
+            $stmt->bind_param("is", $id, $og);
         }
         else {
             $stmt = $conn->prepare("UPDATE sale_article SET articleId=?, articleTitle=?, articlePrice=?, amount=?, saleId=? WHERE id=? and og=?");
             $stmt->bind_param("isdiiis", $articleId, $articleTitle, $articlePrice, $amount, $saleId, $id, $og);
         }
 
-        echoExecuteAsJson($stmt);
+        echoExecuteAsJson($conn,$stmt,isInsert());
         break;
 }
 $conn->close();

@@ -43,7 +43,7 @@ switch($method) {
             $stmt->bind_param("idiisis", $personId, $credit, $isBought, $saleId, $date, $id, $og);
         }
 
-        echoExecuteAsJson($stmt);
+        echoExecuteAsJson($conn,$stmt,isInsert());
         break;
 }
 $conn->close();

@@ -5,7 +5,7 @@ class Sale extends BaseModel {
         this.id="_";
         this.personId = null;
         this.personName = "";
-        this.saleDate = null;
+        this.saleDate = moment().format(util.dateFormat);
         this.payDate = null;
         this.toPay = 0;
         this.toReturn = 0;
@@ -28,7 +28,7 @@ class Sale extends BaseModel {
     }
 
     get isToday() {
-        return this.saleDate  === moment().format("DD.MM.YYYY");
+        return this.saleDate  === moment().format(util.dateFormat);
     }
 
     get isAct() {
@@ -37,16 +37,16 @@ class Sale extends BaseModel {
 
     get salePayDateDay() {
         if(this.payDate !== null)
-            return moment(this.payDate,"DD.MM.YYYY").format("DD.MM.YYYY");
+            return moment(this.payDate,util.dateFormat).format("DD.MM.YYYY");
         return "";
     }
 
     get saleDateDay() {
-        return moment(this.saleDate,"DD.MM.YYYY").format("DD.MM.YYYY");
+        return moment(this.saleDate,util.dateFormat).format("DD.MM.YYYY");
     }
 
     get saleDateAsNr() {
-        return parseInt(moment(this.saleDate, "DD.MM.YYYY").format("YYYYMMDD"),10);
+        return parseInt(moment(this.saleDate, util.dateFormat).format("YYYYMMDD"),10);
     }
 
     setPerson(person) {
@@ -56,11 +56,35 @@ class Sale extends BaseModel {
 
     calculate() {
         var _this = this;
+        
         var copy = JSON.parse(JSON.stringify(_this.articles));
         _this.articles = [];
-        copy.filter(c => c.amount > 0).forEach(c => _this.articles.push(c));
+        copy.filter(c => /*c.amount > 0*/true /*=> copy all; 0 amounts will be removed on save*/).forEach(c => _this.articles.push(c));
         _this.articleSum = 0;
-        _this.articles.forEach(a => _this.articleSum += a.articlePrice * a.amount);
+        _this.articles.forEach(a => _this.articleSum += a.article.price * a.amount);
+    }
+
+    save() {
+        var _this = this;
+        return new Promise((resolve) => {
+            super.save().then(result => {
+                var id = result.id || _this.id;
+                util.log("saved sale - saleId: ", id);
+                var articlePromises = [];
+                _this.articles.forEach(a => {
+
+                    util.log("try to parse article to SaleArticle", a);
+                    var sa = SaleArticle.fromSaleArticle(a.article,a.amount,a.id,id);
+                    util.log("parsed", sa);
+                    var promise = sa.save();
+                    articlePromises.push(promise);
+                });
+
+                Promise.all(articlePromises).then(() => {
+                    resolve(result);        
+                });
+            });
+        });
     }
 
     static getOpenedSaleForPerson(person) {
@@ -74,6 +98,18 @@ class Sale extends BaseModel {
         });
     }
 
+    static parseSaleArticleForSale(sa) {
+        return {
+            id: sa.id,
+            article: {
+                id: sa.articleId,
+                title: sa.articleTitle,
+                price: sa.articlePrice
+            },
+            amount: sa.amount
+        };
+    }
+
     static getList(p) {
         return new Promise(resolve => {
             api.get("sale", p).then(result => {
@@ -83,18 +119,7 @@ class Sale extends BaseModel {
                         sales.forEach(sale => { 
                             var sas = saleArticles.filter(sa => sa.saleId == sale.id);
                             sale.articles = [];
-                            sas.forEach(sa => {
-                                sale.articles.push({
-                                    article: {
-                                        id: sa.articleId,
-                                        title: sa.articleTitle,
-                                        price: sa.articlePrice
-                                    },
-                                    amount: sa.amount
-                                });
-                            });
-
-                            sale.articles = saleArticles.filter(sa => sa.saleId == sale.id);
+                            sas.forEach(sa => sale.articles.push(Sale.parseSaleArticleForSale(sa)));
                         });
                         resolve(sales);
                     });
@@ -106,6 +131,15 @@ class Sale extends BaseModel {
     }
 
     static get(id) {
+        return new Promise(resolve => {
+            super.get("sale", Sale, id).then((sale) => {
+                SaleArticle.getList({ saleId: sale.id}).then(saleArticles => {
+                    sale.articles = [];
+                    saleArticles.forEach(sa => sale.articles.push(Sale.parseSaleArticleForSale(sa)));
+                    resolve(sale);
+                });
+            });
+        });
         return super.get("sale", Sale, id);
     }
 

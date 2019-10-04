@@ -53,17 +53,17 @@ const SalesPage = {
     `,
     data() {
         return {
-            day: moment().format("DD.MM.YYYY"),
+            day: moment().format(util.dateFormat),
             sales: [],
             isMainPage: true
         };
     },
     computed: {
         isToday() {
-            return this.day === moment().format("DD.MM.YYYY");
+            return this.day === moment().format(util.dateFormat);
         },
         dayText() {
-            return moment(this.day,"DD.MM.YYYY").format("dddd, DD.MM.YYYY");
+            return moment(this.day,util.dateFormat).format("dddd, DD.MM.YYYY");
         },
         sumUnpayed() {
             var app = this;

@@ -23,14 +23,14 @@ switch($method) {
             $b = "s";
             $p = array($og);
 
-            if(isset($_GET['date'])) {
-                $sql = $sql." and date=?";
+            if(isset($_GET['day'])) {
+                $sql = $sql." and saleDate=?";
                 $b = $b."s";
-                array_push($p,$_GET['date']);
+                array_push($p,$_GET['day']);
             }
 
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param($b, $p);
+            $stmt->bind_param($b, ...$p);
         }
         echoQueryAsJson($id, $stmt);
         break;
@@ -42,16 +42,16 @@ switch($method) {
         $personName = valueFromPost("personName", "");
         $saleDate = valueFromPost("saleDate", null);
         $payDate = valueFromPost("payDate", null);
-        $toPay = valueFromPost("toPay", 0);
-        $toReturn = valueFromPost("toReturn", 0);
-        $inclTip = valueFromPost("inclTip", 0);
-        $given = valueFromPost("given", 0);
-        $articleSum = valueFromPost("articlesum", 0);
-        $addAdditionalCredit = valueFromPost("addAdditionalCredit", 0);
+        $toPay = $_POST["toPay"];
+        $toReturn = $_POST["toReturn"];
+        $inclTip = $_POST["inclTip"];
+        $given = $_POST["given"];
+        $articleSum = $_POST["articleSum"];
+        $addAdditionalCredit = $_POST["addAdditionalCredit"];
         $usedCredit = boolFromPost("usedCredit");
 
         if(isInsert()) {
-            $stmt = $conn->prepare("INSERT INTO sale (og, personId, personName, saleDate, payDate, toPay, toReturn, inclTip, given, articleSum, addAdditionalCredit, usedCredit) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $conn->prepare("INSERT INTO sale (og, personId, personName, saleDate, payDate, toPay, toReturn, inclTip, given, articleSum, addAdditionalCredit, usedCredit) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->bind_param("sisssddddddi", $og, $personId, $personName, $saleDate, $payDate, $toPay, $toReturn, $inclTip, $given, $articleSum, $addAdditionalCredit, $usedCredit);
         }
         else {
@@ -59,7 +59,7 @@ switch($method) {
             $stmt->bind_param("isssddddddiis", $personId, $personName, $saleDate, $payDate, $toPay, $toReturn, $inclTip, $given, $articleSum, $addAdditionalCredit, $usedCredit, $id, $og);
         }
 
-        echoExecuteAsJson($stmt);
+        echoExecuteAsJson($conn,$stmt,isInsert());
         break;
 }
 $conn->close();

@@ -31,7 +31,7 @@ switch($method) {
         $price = $_POST['price'];
         $isFavorite = boolFromPost("isFavorite");
         $type = $_POST['type'];
-
+        
         if(isInsert()) {
             $stmt = $conn->prepare("INSERT INTO article (og, title, price, isFavorite, type) values (?, ?, ?, ?, ?)");
             $stmt->bind_param("ssdis", $og, $title, $price, $isFavorite, $type);
@@ -41,7 +41,7 @@ switch($method) {
             $stmt->bind_param("sdisis", $title, $price, $isFavorite, $type, $id, $og);
         }
 
-        echoExecuteAsJson($stmt);
+        echoExecuteAsJson($conn,$stmt,isInsert());
         break;
 }
 $conn->close();
