@@ -9,15 +9,12 @@ class Person extends BaseModel {
         this.mainPersonId = null;
         this.personGroup = "";
         this.credit = 0;
-        this.saleCount = 0;
-        this.saleSum = 0;
-        this.topArticleCounts = 0;
-        this.topSaleCount = 0;
-        this.topSaleSum = 0;
         this.phone = "";
         this.email = "";
+        this.saleCount = 0;//do not map, only used in personchooser
+        this.saleSum = 0;//do not map, only used in personchooser
         
-        this.map = ["id","firstName", "lastName", "isMember", "mainPersonId", "personGroup", "credit", "saleCount", "saleSum", "topArticleCounts", "topSaleCount", "topSaleSum", "phone", "email"];
+        this.map = ["id","firstName", "lastName", "isMember", "mainPersonId", "personGroup", "credit", "phone", "email"];
     }
 
     get fullName() {
@@ -79,7 +76,7 @@ class Person extends BaseModel {
 }
 
 const barPerson = {
-    id: "bar",
+    id: -1,
     fullName: "Barverkauf",
     nameWithGroup: "Barverkauf",
     isBar: true,

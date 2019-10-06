@@ -26,24 +26,14 @@ switch($method) {
         break;
 
     case 'POST':
-        $id = $_POST['id'];
-        
-        $personId = valueFromPost("personId", null);
-        $credit = valueFromPost("credit", 0);
-        $isBought = boolFromPost("isBought");
-        $saleId = valueFromPost("saleId", null);
-        $date = valueFromPost("date", null);
-        
-        if(isInsert()) {
-            $stmt = $conn->prepare("INSERT INTO credit_history (og, personId, credit, isBought, saleId, date) values (?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sidiis", $og, $personId, $credit, $isBought, $saleId, $date);
-        }
-        else {
-            $stmt = $conn->prepare("UPDATE credit_history SET personId=?, credit=?, isBought=?, saleId=?, date=? WHERE id=? and og=?");
-            $stmt->bind_param("idiisis", $personId, $credit, $isBought, $saleId, $date, $id, $og);
-        }
-
-        echoExecuteAsJson($conn,$stmt,isInsert());
+        $p = array();
+        array_push($p,getParameter("og", "s", $og));
+        array_push($p,getParameter("personId", "i", valueFromPost("personId", null)));
+        array_push($p,getParameter("credit", "d", valueFromPost("credit", 0)));
+        array_push($p,getParameter("isBought", "i", boolFromPost("isBought");));
+        array_push($p,getParameter("saleId", "i", valueFromPost("saleId", null)));
+        array_push($p,getParameter("date", "s", valueFromPost("date", null)));
+        executeAndReturn($conn, $p, "credit_history");
         break;
 }
 $conn->close();

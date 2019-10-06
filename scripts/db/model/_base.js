@@ -30,7 +30,13 @@ class BaseModel {
     }
 
     remove() {
-        //return this.db.remove(this.doc);
+        var _this = this;
+        return new Promise((resolve,reject) => {
+            var obj = { id: _this.id, delete: 1 };
+            api.set(_this.endpoint, obj).then((result) => {
+                resolve(result);
+            });
+        });
     }
 
     static get(endpoint, cls, id) {

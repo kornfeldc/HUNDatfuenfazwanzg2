@@ -7,6 +7,7 @@ class Article extends BaseModel {
         this.type = "";
         this.price = 0.0;
         this.isFavorite = false;
+        this.countForPerson = 0;//do not map, only used in articlechooser
 
         this.map = ["id","title", "type", "price", "isFavorite"];
     }
@@ -19,10 +20,23 @@ class Article extends BaseModel {
         ];
     }
 
-    static getList() {
+    static getList(p) {
         return new Promise(resolve => {
             api.get("article").then(result => {
-                resolve(this.fromArray(Article, result));
+                if(p && p.personId) {
+                    api.get("personArticleUsage", p).then(personArticleUsages => {
+                        var ret = this.fromArray(Article, result);
+                        if(personArticleUsages) {
+                            personArticleUsages.forEach(pau => {
+                                var a = ret.find(a => a.id == pau.articleId);
+                                if(a) a.countForPerson = pau.amount;
+                            });
+                        }
+                        resolve(ret);
+                    });
+                }
+                else
+                    resolve(this.fromArray(Article, result));
             });
         });
     }
@@ -32,20 +46,9 @@ class Article extends BaseModel {
     }
 
     static sort(articles, p) {
-        return articles.sort((article1,article2) => {
-            if(p.tab == "top") {
-                var ac = 0, bc = 0;
-                if(p.person && p.person.topArticleCounts && p.person.topArticleCounts[article1.id])
-                    ac = p.person.topArticleCounts[article1.id];
-                if(p.person && p.person.topArticleCounts && p.person.topArticleCounts[article2.id])
-                    bc = person.topArticleCounts[article2.id];
-                return ac > bc ? -1 : ac < bc ? 1 : 0;
-            }
-            else {
-                var sortProperty = "title";
-                return article1[sortProperty] < article2[sortProperty] ? -1 : article1[sortProperty] > article2[sortProperty] ? 1 : 0;
-            }
-        });
+        if(p.tab == "top")
+            return articles.sort(firstBy("countForPerson", { direction:-1}).thenBy("title", {ignoreCase:true }));
+        return articles.sort(firstBy("title", {ignoreCase:true }));
     }
 
     static getFiltered(articles, p) {
@@ -58,9 +61,10 @@ class Article extends BaseModel {
             //filter by tab
             if(p.tab) 
                 x = x && (
+                    p.tab === "all" || 
                     (p.tab === "favorites" && article.isFavorite === 1) || 
-                    (p.tab === "top" && p.person && p.person.topArticleCounts && p.person.topArticleCounts[article.id] && p.person.topArticleCounts[article.id] > 0) ||
-                    article.type === p.tab
+                    (p.tab == "top" && article.countForPerson > 0) ||
+                    article.type === p.tab 
                 );
             x = x && util.search(article.title, p.search);
             return x;

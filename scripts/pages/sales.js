@@ -54,6 +54,7 @@ const SalesPage = {
     data() {
         return {
             day: moment().format(util.dateFormat),
+            rawsales: [],
             sales: [],
             isMainPage: true
         };
@@ -98,9 +99,14 @@ const SalesPage = {
             console.log("start load sales");
             app.syncing=true;            
             Sale.getList({ day: app.day, loadArticles: true }).then(sales => {
-                app.sales = sales;      
+                app.rawsales = sales;      
+                app.filter();
                 app.syncing=false;
             }).catch((err) => console.log("error on getting sales", err));
+        },
+        filter() {
+            var app = this;
+            app.sales = Sale.getFiltered(app.rawsales, {});
         },
         open(entry) {
             router.push({ path: 'sale/'+ (entry && entry.id ? entry.id : '_') });

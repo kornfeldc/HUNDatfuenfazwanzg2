@@ -154,7 +154,7 @@ const PayPage = {
 
                 Sale.get(app.$route.params.id).then(sale => { 
                     app.sale=sale;
-                    if(app.sale.personId === 'bar') {
+                    if(app.sale.personId === -1) {
                         app.person = barPerson;
                         app.afterLoad();
                     }
@@ -190,7 +190,7 @@ const PayPage = {
                 app.person.save();
             }
 
-            app.sale.payDate = moment().format("DD.MM.YYYY HH:mm:ss");
+            app.sale.payDate = moment().format(util.dateFormat);
             app.sale.save().then(()=> {
                 app.syncing = false;
                 router.push({ path: "/sales" });

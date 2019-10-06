@@ -12,7 +12,8 @@ Vue.component('modal-article-chooser', {
                 <search v-model="search" @changed="filter" />
                 <div class="tabs" v-if="!search || search.length == 0">
                     <ul>
-                        <li :class="(tab == 'top' ? 'is-active':'')"><a @click="vibrate();tab = 'top';">TOP</a></li>
+                        <li v-if="useTop" :class="(tab == 'top' ? 'is-active':'')"><a @click="vibrate();tab = 'top';">TOP</a></li>
+                        <li :class="(tab == 'all' ? 'is-active':'')"><a @click="vibrate();tab = 'all';">Alle</a></li>
                         <li :class="(tab == 'favorites' ? 'is-active':'')"><a @click="vibrate();tab = 'favorites';">Favoriten</a></li>
                         <li v-for="at in articleTypes" :class="(tab == at.id ? 'is-active':'')"><a @click="vibrate();tab = at.id;">{{at.shortTitle}}</a></li>
                     </ul>
@@ -35,14 +36,15 @@ Vue.component('modal-article-chooser', {
             resolve: null,
             reject: null,
             articleTypes: Article.getTypes(),
-            tab: "top",
+            tab: storage.get("user").useTop == 1 ? "top" : "all",
             rawarticles: [],
             articles: [],
             modifications: [],
             render: true,
             sale: {},
             person: {},
-            firstOnNewSale: false
+            firstOnNewSale: false,
+            useTop: storage.get("user").useTop == 1
         };
     },
     watch: {
@@ -85,15 +87,20 @@ Vue.component('modal-article-chooser', {
         },
         load() {
             var app = this;
-            Article.getList().then(articles => {
+            Article.getList({ personId: app.person.id }).then(articles => {
                 app.rawarticles = articles;
-                app.filter();
+                app.filter(true);
                 $(app.$refs.modal).addClass("is-active");
             });  
         },
-        filter() {
+        filter(firstAfterLoad) {
             var app = this;
             app.articles = Article.getFiltered(app.rawarticles, { search: app.search, tab: app.tab, person: app.person });
+            if(firstAfterLoad && app.articles.length == 0)  {
+                app.tab = "all";
+                app.render=false;
+                app.$nextTick(()=>{app.render=true; app.filter();});
+            }
         },
         modify(article,amount) {
             var app = this;

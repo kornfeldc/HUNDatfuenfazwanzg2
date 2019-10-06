@@ -144,7 +144,16 @@ class Sale extends BaseModel {
     }
 
     static sort(sales, p) {
-        return sales;
+        var ret = sales;
+
+        ret.sort(
+            firstBy("isPayed")
+            .thenBy("saleDateAsNr",-1)
+            .thenBy("person.personName")
+        );
+
+        Sale.addSpecialProperties(ret);
+        return ret;
         // return sales.sort((sale1,sale2) => {
         //      var sortProperty = "title";
         //      return sale1[sortProperty] < sale2[sortProperty] ? -1 : sale1[sortProperty] > sale2[sortProperty] ? 1 : 0;
@@ -165,5 +174,12 @@ class Sale extends BaseModel {
         return this.sort(ret, p);
     }
 
-    
+    static addSpecialProperties(sales) {
+        for(var i = 0; i < sales.length; i++) {
+            if(!sales[i].isPayed && i == 0)
+                sales[i].isFirstUnpayed = true;
+            if(sales[i].isPayed && (i == 0 || !sales[i-1].isPayed))
+                sales[i].isFirstPayed = true;
+        }
+    }
 }

@@ -12,7 +12,7 @@ Vue.component('modal-person-chooser', {
             <search v-model="search" @changed="filter" />
             <div class="tabs" v-if="!search || search.length == 0">
                 <ul>
-                    <li v-for="t in types" :class="(tab == t.id ? 'is-active':'')"><a @click="vibrate();tab = t.id;">{{t.shortTitle}}</a></li>
+                    <li v-for="t in types" v-if="t.id !== 'top' || useTop" :class="(tab == t.id ? 'is-active':'')"><a @click="vibrate();tab = t.id;">{{t.shortTitle}}</a></li>
                 </ul>
             </div>
             
@@ -47,11 +47,12 @@ Vue.component('modal-person-chooser', {
                 { id: "member", shortTitle: "Mitglieder" },
                 { id: "nomember", shortTitle: "Kursler" }
             ],
-            tab: "top",
+            tab: storage.get("user").useTop == 1 ? "top" : "all",
             resolve: null,
             reject: null,
             rawpersons: [],
             persons: [],
+            useTop: storage.get("user").useTop == 1
         };
     },
     watch: {
@@ -73,13 +74,18 @@ Vue.component('modal-person-chooser', {
             var app = this;
             Person.getList().then(persons => {
                 app.rawpersons = persons;      
-                app.filter();
+                app.filter(true);
                 $(app.$refs.modal).addClass("is-active");
             });   
         },
-        filter() {
+        filter(firstAfterLoad) {
             var app = this;
             app.persons = Person.getFiltered(app.rawpersons, { search: app.search, tab: app.tab });
+            if(firstAfterLoad && app.persons.length == 0)  {
+                app.tab = "all";
+                app.render=false;
+                app.$nextTick(()=>{app.render=true; app.filter();});
+            }
         },
         cancel() {
             var app = this;

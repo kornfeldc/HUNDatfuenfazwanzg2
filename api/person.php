@@ -26,32 +26,18 @@ switch($method) {
         break;
 
     case 'POST':
-        $id = $_POST['id'];
-        
-        $firstName = $_POST['firstName'];
-        $lastName = $_POST['lastName'];
-        $isMember = boolFromPost("isMember");
-        $mainPersonId = valueFromPost("mainPersonId", null);
-        $personGroup = $_POST['personGroup'];
-        $credit = valueFromPost("credit", 0);
-        $saleCount = valueFromPost("saleCount", 0);
-        $saleSum = valueFromPost("saleSum", 0);
-        $topArticleCounts = valueFromPost("topArticleCounts", 0);
-        $topSaleCount = valueFromPost("topSaleCount", 0);
-        $topSaleSum = valueFromPost("topSaleSum", 0);
-        $phone = $_POST['phone'];
-        $email = $_POST['email'];
+        $p = array();
+        array_push($p,getParameter("og", "s", $og));
+        array_push($p,getParameter("firstName", "s", $_POST['firstName']));
+        array_push($p,getParameter("lastName", "s", $_POST['lastName']));
+        array_push($p,getParameter("isMember", "i", boolFromPost("isMember")));
+        array_push($p,getParameter("mainPersonId", "i", valueFromPost("mainPersonId", null)));
+        array_push($p,getParameter("personGroup", "s", $_POST['personGroup']));
+        array_push($p,getParameter("credit", "d", valueFromPost("credit", 0)));
+        array_push($p,getParameter("phone", "s", $_POST['phone']));
+        array_push($p,getParameter("email", "s", $_POST['email']));
 
-        if(isInsert()) {
-            $stmt = $conn->prepare("INSERT INTO person (og, firstName, lastName, isMember, mainPersonId, personGroup, credit, saleCount, saleSum, topArticleCounts, topSaleCount, topSaleSum) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssiisdidiidss", $og, $firstName, $lastName, $isMember, $mainPersonId, $personGroup, $credit, $saleCount, $saleSum, $topArticleCounts, $topSaleCount, $topSaleSum, $phone, $email);
-        }
-        else {
-            $stmt = $conn->prepare("UPDATE person SET firstName=?, lastName=?, isMember=?, mainPersonId=?, personGroup=?, phone=?, email=? WHERE id=? and og=?");
-            $stmt->bind_param("ssiisssis", $firstName, $lastName, $isMember, $mainPersonId, $personGroup, $phone, $email, $id, $og);
-        }
-
-        echoExecuteAsJson($conn,$stmt,isInsert());
+        executeAndReturn($conn, $p, "person");
         break;
 }
 $conn->close();

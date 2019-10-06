@@ -26,22 +26,13 @@ switch($method) {
         break;
 
     case 'POST':
-        $id = $_POST['id'];
-        $title = $_POST['title'];
-        $price = $_POST['price'];
-        $isFavorite = boolFromPost("isFavorite");
-        $type = $_POST['type'];
-        
-        if(isInsert()) {
-            $stmt = $conn->prepare("INSERT INTO article (og, title, price, isFavorite, type) values (?, ?, ?, ?, ?)");
-            $stmt->bind_param("ssdis", $og, $title, $price, $isFavorite, $type);
-        }
-        else {
-            $stmt = $conn->prepare("UPDATE article SET title=?, price=?, isFavorite=?, type=? WHERE id=? and og=?");
-            $stmt->bind_param("sdisis", $title, $price, $isFavorite, $type, $id, $og);
-        }
-
-        echoExecuteAsJson($conn,$stmt,isInsert());
+        $p = array();
+        array_push($p,getParameter("og", "s", $og));
+        array_push($p,getParameter("title", "s", $_POST['title']));
+        array_push($p,getParameter("price", "d", $_POST['price']));
+        array_push($p,getParameter("isFavorite", "i", boolFromPost("isFavorite")));
+        array_push($p,getParameter("type", "s", $_POST['type']));
+        executeAndReturn($conn, $p, "article");
         break;
 }
 $conn->close();

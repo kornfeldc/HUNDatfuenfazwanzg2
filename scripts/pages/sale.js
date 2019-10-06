@@ -31,9 +31,6 @@ const SalePage = {
                 <div class="control" v-if="sale.articleSum != 0 && !sale.isPayed">
                     <button-success @click="vibrate();pay();">Zahlen</button-success>
                 </div>
-                <!--<div class="control" v-if="sale.articleSum != 0 && person.credit >= sale.articleSum && !sale.isPayed">
-                    <button-success-inverted @click="vibrate();payWCredit();">Alles mit Guthaben zahlen</button-success-inverted>
-                </div>-->
                 <div class="control">
                     <button-cancel @click="vibrate();cancel();"/>
                 </div>
@@ -75,7 +72,7 @@ const SalePage = {
             if(app.$route.params.id !== "_") {
                 Sale.get(app.$route.params.id).then(sale => {
                     app.sale = sale;
-                    if(app.sale.personId === 'bar') {
+                    if(app.sale.personId === -1) {
                         app.person = barPerson;
                         app.restore();
                     }
@@ -199,7 +196,7 @@ const SalePage = {
         },
         openPerson() {
             var app = this;
-            if(app.person.id  !== 'bar') {
+            if(app.person.id  !== -1) {
                 app.saveOnDestroy = true;
                 router.push({ path: "/person/"+app.person.id, query: { s: app.sale.id } });
             }

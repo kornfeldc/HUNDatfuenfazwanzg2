@@ -21,6 +21,12 @@ function isInsert() {
     return !isset($id) || $id=='_';
 }
 
+function isDelete() {
+    $id = $_POST['id'];
+    $delete = $_POST['delete'];
+    return isset($id) && $id!='_' && isset($delete) && $delete == "1";
+}
+
 function boolFromPost($str) {
     return $_POST[$str] == "true" || $_POST[$str] == "1" || $_POST[$str] == 1 ? 1 : 0;
 }
@@ -67,4 +73,73 @@ function echoStatus($ok, $message, $id) {
         $status->id = $id;
     echo(json_encode($status));
 }
+
+function getParameter($name, $type, $value) {
+    $p = new \stdClass(); 
+    $p->name=$name; 
+    $p->type=$type;
+    $p->value=$value;
+    return $p;
+}
+
+function genereateStatement($parameterArray, $tableName) {
+    $b = "";
+    $p = array();
+
+    $ret = new \stdClass();
+    $ret->sql = "";
+    $ret->b = "";
+    $ret->p = array();
+
+    if(isInsert()) {
+        $ret->sql = "INSERT INTO " . $tableName . " (";
+        
+        foreach ($parameterArray as $parameter) {
+            if($parameter->name != "id") {
+                $ret->sql = $ret->sql . $parameter->name . ",";
+                $ret->b = $ret->b . $parameter->type;
+                array_push($ret->p, $parameter->value);
+            }
+        }
+        $ret->sql = substr_replace($ret->sql ,"", -1);
+
+        $ret->sql = $ret->sql . ") VALUES ("; 
+        foreach ($parameterArray as $parameter) {
+            $ret->sql = $ret->sql . "?,";
+        }
+        $ret->sql = substr_replace($ret->sql ,"", -1);
+        $ret->sql = $ret->sql . ")";
+    }
+    else {
+        $ret->sql = "UPDATE " . $tableName . " SET ";
+
+        $og = "";
+        foreach ($parameterArray as $parameter) {
+             if($parameter->name != "id" && $parameter->name != "og") {
+                 $ret->sql = $ret->sql . $parameter->name . " = ?,";
+                 $ret->b = $ret->b . $parameter->type;
+                 array_push($ret->p, $parameter->value);
+            }
+             else if($parameter->name = "og") 
+                 $og = $parameter->value;
+        }
+        $ret->sql = substr_replace($ret->sql ,"", -1);
+        $ret->sql = $ret->sql . " WHERE id = ? AND og = ?";
+        $ret->b = $ret->b . "is";
+        array_push($ret->p, $_POST["id"]);
+        array_push($ret->p, $og);
+    }
+
+    return $ret;
+}
+
+function executeAndReturn($conn, $p, $tableName) {
+    $obj = genereateStatement($p, $tableName);
+    //echo($obj->sql);
+    //echo("b:".$obj->b);
+    $stmt = $conn->prepare($obj->sql);
+    $stmt->bind_param($obj->b, ...$obj->p);
+    echoExecuteAsJson($conn,$stmt,isInsert());
+}
+
 ?>

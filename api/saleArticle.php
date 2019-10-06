@@ -43,28 +43,72 @@ switch($method) {
         break;
 
     case 'POST':
-        $id = $_POST['id'];
-        
-        $articleId = valueFromPost("articleId", null);
-        $articleTitle = valueFromPost("articleTitle", "");
-        $articlePrice = $_POST["articlePrice"];
         $amount = $_POST["amount"];
-        $saleId = valueFromPost("saleId", null);
-        
-        if(isInsert() && $amount > 0) {
-            $stmt = $conn->prepare("INSERT INTO sale_article (og, articleId, articleTitle, articlePrice, amount, saleId) values (?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sisdii", $og, $articleId, $articleTitle, $articlePrice, $amount, $saleId);
-        }
-        else if($amount == 0) {
+        if(!isInsert() && $amount == 0) {
             $stmt = $conn->prepare("DELETE FROM sale_article WHERE id=? and og=?");
             $stmt->bind_param("is", $id, $og);
+            echoExecuteAsJson($conn,$stmt,isInsert());
         }
-        else {
-            $stmt = $conn->prepare("UPDATE sale_article SET articleId=?, articleTitle=?, articlePrice=?, amount=?, saleId=? WHERE id=? and og=?");
-            $stmt->bind_param("isdiiis", $articleId, $articleTitle, $articlePrice, $amount, $saleId, $id, $og);
+        else if($amount != 0) {
+            $p = array();
+            array_push($p,getParameter("og", "s", $og));
+            array_push($p,getParameter("articleId", "i", valueFromPost("articleId", null)));
+            array_push($p,getParameter("articleTitle", "s", valueFromPost("articleTitle", "")));
+            array_push($p,getParameter("articlePrice", "d", $_POST["articlePrice"]));
+            array_push($p,getParameter("amount", "d", $_POST["amount"]));
+            array_push($p,getParameter("saleId", "i", valueFromPost("saleId", null)));
+            executeAndReturn($conn, $p, "sale_article");
         }
 
-        echoExecuteAsJson($conn,$stmt,isInsert());
+        //update person sale count (possible improving performance by just updating this person instead of all)
+        $stmt = $conn->prepare("update person p set p.saleCount = (select count(*) from sale s where s.personId = p.id) where p.og = ?");  $stmt->bind_param("s", $og); $stmt->execute();
+        $stmt = $conn->prepare("update person p set p.saleSum = (select sum(s.articleSum) from sale s where s.personId = p.id) where p.og = ?");  $stmt->bind_param("s", $og); $stmt->execute();
+
+        $stmt = $conn->prepare("
+            insert ignore into person_article_usage 
+                (personId, articleId, amount) 
+                (
+                        select 
+                            s.personId, sa.articleId, sum(sa.amount)
+                        from sale_article sa 
+                        join sale s on s.id = sa.saleId 
+                        group by s.personId, sa.articleId
+                )"); 
+        $stmt->execute();
+        $stmt = $conn->prepare("
+            update person_article_usage pa 
+            inner join (
+                select s.personId, sa.articleId, sum(sa.amount) as amount
+                from sale s
+                join sale_article sa on sa.saleId = s.id
+                group by s.personId, sa.articleId
+            ) su ON pa.articleId = su.articleId AND pa.personId = su.personId
+            set pa.amount = su.amount"); 
+        $stmt->execute();
+
+        //update sale_days
+        $stmt = $conn->prepare("
+                insert ignore into sale_days (og, day, payed, toPay)
+                (
+                    select 
+                        og, saleDate, sum(case when payDate is not null then articleSum else 0 end), sum(case when payDate is null then articleSum else 0 end)
+                    from sale
+                    group by og, saleDate
+                )
+        ");
+        $stmt->execute();
+        $stmt = $conn->prepare("
+                update sale_days sd
+                inner join (
+                    select 
+                        og, saleDate, sum(case when payDate is not null then articleSum else 0 end) payed, sum(case when payDate is null then articleSum else 0 end) toPay
+                    from sale
+                    group by og, saleDate
+                ) x on x.og = sd.og and x.saleDate = sd.day
+                set sd.payed = x.payed, sd.toPay = x.toPay
+        ");
+        $stmt->execute();
+
         break;
 }
 $conn->close();

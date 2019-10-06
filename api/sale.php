@@ -37,29 +37,29 @@ switch($method) {
 
     case 'POST':
         $id = $_POST['id'];
-        
-        $personId = valueFromPost("personId", null);
-        $personName = valueFromPost("personName", "");
-        $saleDate = valueFromPost("saleDate", null);
-        $payDate = valueFromPost("payDate", null);
-        $toPay = $_POST["toPay"];
-        $toReturn = $_POST["toReturn"];
-        $inclTip = $_POST["inclTip"];
-        $given = $_POST["given"];
-        $articleSum = $_POST["articleSum"];
-        $addAdditionalCredit = $_POST["addAdditionalCredit"];
-        $usedCredit = boolFromPost("usedCredit");
 
-        if(isInsert()) {
-            $stmt = $conn->prepare("INSERT INTO sale (og, personId, personName, saleDate, payDate, toPay, toReturn, inclTip, given, articleSum, addAdditionalCredit, usedCredit) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sisssddddddi", $og, $personId, $personName, $saleDate, $payDate, $toPay, $toReturn, $inclTip, $given, $articleSum, $addAdditionalCredit, $usedCredit);
+        if(isDelete()) {
+            $stmt = $conn->prepare("delete from sale_article where saleId = ?"); $stmt->bind_param("i", $id); $stmt->execute();
+            $stmt = $conn->prepare("delete from sale where id = ?"); $stmt->execute();
+            echoStatus(true, "", "");
         }
         else {
-            $stmt = $conn->prepare("UPDATE sale SET personId=?, personName=?, saleDate=?, payDate=?, toPay=?, toReturn=?, inclTip=?, given=?, articleSum=?, addAdditionalCredit=?, usedCredit=? WHERE id=? and og=?");
-            $stmt->bind_param("isssddddddiis", $personId, $personName, $saleDate, $payDate, $toPay, $toReturn, $inclTip, $given, $articleSum, $addAdditionalCredit, $usedCredit, $id, $og);
+            $p = array();
+            array_push($p,getParameter("og", "s", $og));
+            array_push($p,getParameter("personId", "i", valueFromPost("personId", null)));
+            array_push($p,getParameter("personName", "s", valueFromPost("personName", "")));
+            array_push($p,getParameter("saleDate", "s", valueFromPost("saleDate", null)));
+            array_push($p,getParameter("payDate", "s", valueFromPost("payDate", null)));
+            array_push($p,getParameter("toPay", "d", $_POST["toPay"]));
+            array_push($p,getParameter("toReturn", "d", $_POST["toReturn"]));
+            array_push($p,getParameter("inclTip", "d", $_POST["inclTip"]));
+            array_push($p,getParameter("given", "d", $_POST["given"]));
+            array_push($p,getParameter("articleSum", "d", $_POST["articleSum"]));
+            array_push($p,getParameter("addAdditionalCredit", "d", $_POST["addAdditionalCredit"]));
+            array_push($p,getParameter("usedCredit", "d", boolFromPost("usedCredit")));
+            executeAndReturn($conn, $p, "sale");
         }
 
-        echoExecuteAsJson($conn,$stmt,isInsert());
         break;
 }
 $conn->close();
