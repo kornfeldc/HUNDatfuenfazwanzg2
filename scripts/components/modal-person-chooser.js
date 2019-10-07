@@ -80,7 +80,7 @@ Vue.component('modal-person-chooser', {
         },
         filter(firstAfterLoad) {
             var app = this;
-            app.persons = Person.getFiltered(app.rawpersons, { search: app.search, tab: app.tab });
+            app.persons = Person.getFiltered(app.rawpersons, { search: app.search, tab: app.tab, chooser: true });
             if(firstAfterLoad && app.persons.length == 0)  {
                 app.tab = "all";
                 app.render=false;

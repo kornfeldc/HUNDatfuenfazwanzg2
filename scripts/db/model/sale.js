@@ -182,4 +182,13 @@ class Sale extends BaseModel {
                 sales[i].isFirstPayed = true;
         }
     }
+
+    static getDayList() {
+        return new Promise(resolve => {
+            api.get("saleDay").then(result => {
+                result && result.forEach(d => d.dayText = moment(d.day,util.dateFormat).format("dddd, DD.MM.YYYY"));
+                resolve(result);
+            });
+        });
+    }
 }

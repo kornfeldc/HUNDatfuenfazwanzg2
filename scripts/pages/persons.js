@@ -24,12 +24,12 @@ const PersonsPage = {
         return {
             search: "",
             types: [
-                { id: "top", shortTitle: "TOP" },
+                //{ id: "top", shortTitle: "TOP" },
                 { id: "all", shortTitle: "Alle" },
                 { id: "member", shortTitle: "Mitglieder" },
                 { id: "nomember", shortTitle: "Kursler" }
             ],
-            tab: "top",
+            tab: "all",
             rawpersons: [],
             persons: [],
             isMainPage: true,

@@ -13,6 +13,7 @@ class Person extends BaseModel {
         this.email = "";
         this.saleCount = 0;//do not map, only used in personchooser
         this.saleSum = 0;//do not map, only used in personchooser
+        this.relatedNames = ""; //do not map, only used in personChooser
         
         this.map = ["id","firstName", "lastName", "isMember", "mainPersonId", "personGroup", "credit", "phone", "email"];
     }
@@ -31,7 +32,8 @@ class Person extends BaseModel {
         return (
             util.search(this.firstName, str) || 
             util.search(this.lastName, str) || 
-            util.search(this.personGroup, str)
+            util.search(this.personGroup, str) || 
+            util.search(this.relatedNames, str)
         );
     }
 
@@ -58,8 +60,11 @@ class Person extends BaseModel {
 
     static getFiltered(persons, p) {
         var ret = persons.filter(person => {
-            var x = true;
+            
+            if(p.chooser && person.mainPersonId != person.id) 
+                return false;
 
+            var x = true;
             if(p.tab)
                 x = x && (
                     p.tab === "all" ||

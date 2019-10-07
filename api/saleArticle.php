@@ -86,9 +86,9 @@ switch($method) {
             set pa.amount = su.amount"); 
         $stmt->execute();
 
-        //update sale_days
+        //update sale_day
         $stmt = $conn->prepare("
-                insert ignore into sale_days (og, day, payed, toPay)
+                insert ignore into sale_day (og, day, payed, toPay)
                 (
                     select 
                         og, saleDate, sum(case when payDate is not null then articleSum else 0 end), sum(case when payDate is null then articleSum else 0 end)
@@ -98,7 +98,7 @@ switch($method) {
         ");
         $stmt->execute();
         $stmt = $conn->prepare("
-                update sale_days sd
+                update sale_day sd
                 inner join (
                     select 
                         og, saleDate, sum(case when payDate is not null then articleSum else 0 end) payed, sum(case when payDate is null then articleSum else 0 end) toPay

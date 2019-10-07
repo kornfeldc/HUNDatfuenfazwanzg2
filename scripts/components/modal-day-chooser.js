@@ -15,8 +15,8 @@ Vue.component('modal-day-chooser', {
                         <div class="column">
                             {{day.dayText}}    
                         </div>
-                        <div class="column is-narrow warning-text" style="min-width:100px;text-align:right" v-show="day.topay!=0">
-                            {{format(day.topay)}}
+                        <div class="column is-narrow warning-text" style="min-width:100px;text-align:right" v-show="day.toPay!=0">
+                            {{format(day.toPay)}}
                         </div>
                         <div class="column is-narrow has-text-success" style="min-width:100px;text-align:right">
                             {{format(day.payed)}}
@@ -43,12 +43,9 @@ Vue.component('modal-day-chooser', {
     methods: {
         open() {
             var app = this;
-            app.tab = "favorites";
             
-            app.$emit("syncStart");
             Sale.getDayList().then(dayList => {
                 app.dayList = dayList;
-                app.$emit("syncStop");
                 $(app.$refs.modal).addClass("is-active");
             });   
 
@@ -66,7 +63,7 @@ Vue.component('modal-day-chooser', {
             app.resolve(day);
         },
         today() {
-            this.selectDay(moment().format("DD.MM.YYYY"));
+            this.selectDay(moment().format(util.dateFormat));
         },
         cancel() {
             var app = this;

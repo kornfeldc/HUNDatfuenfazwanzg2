@@ -117,6 +117,8 @@ const PersonPage = {
         },
         save() {
             var app = this;
+            if(!app.isPersonGroup)
+                app.person.personGroup = "";
             app.person.save().then(()=> {
                 //Person.correctPersons();
                 app.back();

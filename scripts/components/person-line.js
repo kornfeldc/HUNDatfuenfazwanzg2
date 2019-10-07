@@ -9,6 +9,7 @@ Vue.component('person-line', {
         <div class="column is-full">
             <h4 class="title is-5" v-if="mode !== 'chooser'">{{person.fullName}}</h4>
             <h4 class="title is-5" v-if="mode === 'chooser'">{{person.nameWithGroup}}</h4>
+            <h5 class="subtitle is-6" v-if="mode==='chooser' && person.relatedNames && person.relatedNames.indexOf(',')>0">{{person.relatedNames}}</h5>
         </div>
     </div>
     `,
