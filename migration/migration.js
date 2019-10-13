@@ -66,7 +66,6 @@ class Migration {
             person.personGroup = row.doc.personGroup;
             person.credit = row.doc.credit;
 
-            //promises.push(person.save());
             await person.save();
         }
     }

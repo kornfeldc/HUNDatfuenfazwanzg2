@@ -22,8 +22,8 @@
         var promises = [];
         var migration = new Migration();
         //promises.push(migration.execute("articles"));
-        //promises.push(migration.execute("persons"));
-        promises.push(migration.execute("sales"));
+        promises.push(migration.execute("persons"));
+        //promises.push(migration.execute("sales"));
         Promise.all(promises).then(() => {
             alert("done");
         });
