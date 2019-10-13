@@ -1,8 +1,8 @@
 <?php
 function getOg($conn) {
-    $hash = $_GET["hash"];
+    $hash = @$_GET["hash"];
     if(!isset($hash))
-        $hash = $_POST["hash"];
+        $hash = @$_POST["hash"];
     //https://www.php.net/manual/de/mysqli.prepare.php
     $stmt = $conn->prepare("SELECT og FROM user WHERE hash=?");
     $stmt->bind_param("s", $hash);
@@ -17,22 +17,22 @@ function getOg($conn) {
 }
 
 function isInsert() {
-    $id = $_POST['id'];
+    $id = @$_POST['id'];
     return !isset($id) || $id=='_';
 }
 
 function isDelete() {
-    $id = $_POST['id'];
-    $delete = $_POST['delete'];
+    $id = @$_POST['id'];
+    $delete = @$_POST['delete'];
     return isset($id) && $id!='_' && isset($delete) && $delete == "1";
 }
 
 function boolFromPost($str) {
-    return $_POST[$str] == "true" || $_POST[$str] == "1" || $_POST[$str] == 1 ? 1 : 0;
+    return @$_POST[$str] == "true" || @$_POST[$str] == "1" || @$_POST[$str] == 1 ? 1 : 0;
 }
 
 function valueFromPost($str, $def) {
-    $val = $_POST[$str];
+    $val = @$_POST[$str];
     if(!isset($val) || $val == "")
         $val = $def;
     return $val;
@@ -46,16 +46,18 @@ function echoQueryAsJson($id,$stmt) {
         echo ($i>0?',':'').json_encode(mysqli_fetch_object($res));
     }
     if (!$id) echo ']';
+    http_response_code(200);
 }
 
 function echoExecuteAsJson($conn,$stmt,$isInsert) {
     if($stmt->execute())  {
+        $id = @$_POST['id'];
         if($isInsert) {
             $last_id = $conn->insert_id;
             echoStatus(true, "", $last_id);    
         }
-        else if(isset($_POST['id']))
-            echoStatus(true, "", $_POST['id']);    
+        else if(isset($id))
+            echoStatus(true, "", $id);    
         else
             echoStatus(true, "", "");
 
@@ -72,6 +74,7 @@ function echoStatus($ok, $message, $id) {
     if(isset($id) && $id != "")
         $status->id = $id;
     echo(json_encode($status));
+    http_response_code(200);
 }
 
 function getParameter($name, $type, $value) {
@@ -126,7 +129,7 @@ function genereateStatement($parameterArray, $tableName) {
         $ret->sql = substr_replace($ret->sql ,"", -1);
         $ret->sql = $ret->sql . " WHERE id = ? AND og = ?";
         $ret->b = $ret->b . "is";
-        array_push($ret->p, $_POST["id"]);
+        array_push($ret->p, @$_POST["id"]);
         array_push($ret->p, $og);
     }
 
@@ -140,6 +143,70 @@ function executeAndReturn($conn, $p, $tableName) {
     $stmt = $conn->prepare($obj->sql);
     $stmt->bind_param($obj->b, ...$obj->p);
     echoExecuteAsJson($conn,$stmt,isInsert());
+}
+
+function recalculate($conn, $og) {
+    //update person sale count (possible improving performance by just updating this person instead of all)
+    $stmt = $conn->prepare("update person p set p.saleCount = (select count(*) from sale s where s.personId = p.id) where p.og = ?");  
+    $stmt->bind_param("s", $og); 
+    $stmt->execute();
+    $stmt = $conn->prepare("update person p set p.saleSum = (select sum(s.articleSum) from sale s where s.personId = p.id) where p.og = ?");  
+    $stmt->bind_param("s", $og); 
+    $stmt->execute();
+
+    $stmt = $conn->prepare("
+        insert ignore into person_article_usage 
+            (personId, articleId, amount) 
+            (
+                    select 
+                        s.personId, sa.articleId, sum(sa.amount)
+                    from sale_article sa 
+                    join sale s on s.id = sa.saleId 
+                    where s.og = ?
+                    group by s.personId, sa.articleId
+            )"); 
+    $stmt->bind_param("s", $og); 
+    $stmt->execute();
+    $stmt = $conn->prepare("
+        update person_article_usage pa 
+        inner join (
+            select s.personId, sa.articleId, sum(sa.amount) as amount
+            from sale s
+            join sale_article sa on sa.saleId = s.id
+            where s.og = ?
+            group by s.personId, sa.articleId
+        ) su ON pa.articleId = su.articleId AND pa.personId = su.personId
+        set pa.amount = su.amount"); 
+    $stmt->bind_param("s", $og); 
+    $stmt->execute();
+
+    //update sale_day
+    $stmt = $conn->prepare("
+            insert ignore into sale_day (og, day, payed, toPay)
+            (
+                select 
+                    og, saleDate, sum(case when payDate is not null then articleSum else 0 end), sum(case when payDate is null then articleSum else 0 end)
+                from sale
+                where og = ?
+                group by og, saleDate
+            )
+    ");
+    $stmt->bind_param("s", $og); 
+    $stmt->execute();
+    $stmt = $conn->prepare("
+            update sale_day sd
+            left join (
+                select 
+                    og, saleDate, sum(case when payDate is not null then articleSum else 0 end) payed, sum(case when payDate is null then articleSum else 0 end) toPay
+                from sale
+                where og=?
+                group by og, saleDate
+            ) x on x.og = sd.og and x.saleDate = sd.day
+            set sd.payed = coalesce(x.payed,0), sd.toPay = coalesce(x.toPay,0)
+            where sd.og=?
+    ");
+    $stmt->bind_param("ss", $og, $og); 
+    $stmt->execute();
 }
 
 ?>

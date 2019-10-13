@@ -69,13 +69,13 @@ const SalesPage = {
         sumUnpayed() {
             var app = this;
             var sum = 0;
-            app.sales.filter(s => !s.isPayed).forEach(s => sum += s.articleSum);
+            app.sales.filter(s => !s.isPayed).forEach(s => sum += parseFloat(s.articleSum));
             return sum;
         },
         sumPayed() {
             var app = this;
             var sum = 0;
-            app.sales.filter(s => s.isPayed).forEach(s => sum += s.articleSum);
+            app.sales.filter(s => s.isPayed).forEach(s => sum += parseFloat(s.articleSum));
             return sum;
         }
     },
@@ -85,6 +85,8 @@ const SalesPage = {
     methods: {
         initDone() {
             var app = this;
+            
+            app.restore();
             app.load();
 
             // $(document).on("dbChanged", (evt,options) => {
@@ -109,6 +111,8 @@ const SalesPage = {
             app.sales = Sale.getFiltered(app.rawsales, {});
         },
         open(entry) {
+            var app = this;
+            app.$root.storedSalesOptions = { day: app.day };
             router.push({ path: 'sale/'+ (entry && entry.id ? entry.id : '_') });
         },
         chooseDay() {
@@ -117,6 +121,16 @@ const SalesPage = {
                 app.day = day;
                 app.load();
             }); 
+        },
+        restore() {
+            var app = this;
+            if(app.$root.storedSalesOptions) {
+                app.day = app.$root.storedSalesOptions.day;
+                delete app.$root.storedSalesOptions;
+                return true;
+            }
+            else
+                return false;
         }
     }
 }

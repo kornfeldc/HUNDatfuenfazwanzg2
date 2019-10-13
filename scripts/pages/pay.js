@@ -175,10 +175,9 @@ const PayPage = {
 
             app.recalc("initial");
         },
-        save() {
+        async save() {
             var app = this
             app.syncing = true;
-
             app.sale.personCreditBefore = app.personCredit;
             app.sale.personCreditAfter = app.newCredit;
             app.sale.toReturn = app.toReturn;
@@ -186,15 +185,21 @@ const PayPage = {
             app.sale.usedCredit = app.useCredit;
 
             if(app.newCredit !== app.personCredit) {
+                var creditDiff = app.newCredit - app.person.credit;
                 app.person.credit = app.newCredit;
-                app.person.save();
+                await app.person.save();
+
+                var creditHistory = new CreditHistory();
+                creditHistory.personId = app.person.id;
+                creditHistory.credit = creditDiff;
+                creditHistory.saleId = app.sale.id;
+                await creditHistory.save();
             }
 
             app.sale.payDate = moment().format(util.dateFormat);
-            app.sale.save().then(()=> {
-                app.syncing = false;
-                router.push({ path: "/sales" });
-            });
+            await app.sale.save();
+            app.syncing = false;
+            router.push({ path: "/sales" });
         },
         cancel() {
             var app = this;

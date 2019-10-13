@@ -36,6 +36,9 @@ Vue.component('search', {
             var app = this;
             app.$emit("input", "");
             app.$emit("changed");
+        },
+        set(val) {
+            this.val = val;
         }
     }
  });

@@ -1,5 +1,6 @@
 var api = {
-    
+    url: "api",
+
     hash: "",
 
     get: (endpoint, p) => {
@@ -7,10 +8,8 @@ var api = {
             p = p||{};
             var user = storage.get("user");
             if(user) p.hash = user.hash;
-            
             $.get({
-                url: `api/${endpoint}.php`,
-                //dataType:"application/json",
+                url: `${api.url}/${endpoint}.php`,
                 data: p,
                 success: (result) => {
                     console && console.log("api.get result", result);
@@ -25,10 +24,8 @@ var api = {
             p = p||{};
             var user = storage.get("user");
             if(user) p.hash = user.hash;
-
             $.post({
-                url: `api/${endpoint}.php`,
-                //dataType:"application/json",
+                url: `${api.url}/${endpoint}.php`,
                 data: p,
                 success: (result) => {
                     console && console.log("api.set result", result);
@@ -39,7 +36,7 @@ var api = {
     },
 
     login: (login, pw) => {
-        return new Promise((resolve,reject) => {
+        return new Promise(resolve => {
             api.get("auth", { login: login, pw: pw }).then(result => {
                 resolve(result);
             });

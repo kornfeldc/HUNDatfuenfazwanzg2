@@ -67,56 +67,62 @@ const SalePage = {
             var app = this;
             app.load();
         },
-        load() {
+        async load() {
             var app = this;
             if(app.$route.params.id !== "_") {
-                Sale.get(app.$route.params.id).then(sale => {
-                    app.sale = sale;
+                try {
+                    app.syncing = true;
+                    app.sale = await Sale.get(app.$route.params.id);
+                    app.syncing = false;
                     if(app.sale.personId === -1) {
                         app.person = barPerson;
                         app.restore();
                     }
-                    else
-                        Person.get(app.sale.personId).then(person=> { 
+                    else {
+                        app.syncing = true;
+                        await Person.get(app.sale.personId).then(person=> { 
                             app.person = person;
                             app.restore();
                         });
-                }, () => router.push({ path: "/sales" }) );
+                        app.syncing = false;
+                    }
+                }
+                catch(e) {
+                    router.push({ path: "/sales" });
+                }
             }
             else {
-                app.$refs.personChooser.open().then(
+                try {
+                    var person = await app.$refs.personChooser.open();
                     //person selected
-                    person => {
-
-                        //check if there is an open sale for this person
-                        if(!person.isBar) {
-                            Sale.getOpenedSaleForPerson(person).then(sale => {
-                                var firstOnNewSale = true;
-                                if(sale) {
-                                    app.sale = sale;
-                                    firstOnNewSale = false;
-                                }
-                                else {
-                                    app.sale = new Sale();
-                                    app.sale.setPerson(person);
-                                }
-                                app.person = person;
-                                if(!app.restore())
-                                    app.addArticles(firstOnNewSale);
-                            });
+                    //check if there is an open sale for this person
+                    if(!person.isBar) {
+                        var sale = await Sale.getOpenedSaleForPerson(person);
+                        var firstOnNewSale = true;
+                        if(sale) {
+                            app.sale = sale;
+                            firstOnNewSale = false;
                         }
                         else {
                             app.sale = new Sale();
                             app.sale.setPerson(person);
-                            app.person = person;
-                            if(!app.restore())
-                                app.addArticles(true);
                         }
-                        
-                    }, 
-                    //nothing selected:
-                    () => router.push({ path: "/sales" }) 
-                );
+                        app.person = person;
+                        if(!app.restore())
+                            app.addArticles(firstOnNewSale);
+                    }
+                    else {
+                        app.sale = new Sale();
+                        app.sale.setPerson(person);
+                        app.person = person;
+                        if(!app.restore())
+                            app.addArticles(true);
+                    }
+                    
+                }
+                catch(e) {//nothing selected:
+                    router.push({ path: "/sales" });
+                }
             }
         },
         addArticles(firstOnNewSale) {
@@ -128,7 +134,6 @@ const SalePage = {
                     app.calculate();
                 }
             }, (rejectMode) => {
-
                 if(rejectMode === "addCredit") 
                     app.addCredit();
                 else if(firstOnNewSale === true)
@@ -148,36 +153,34 @@ const SalePage = {
             app.render = false;
             app.$nextTick(()=>app.render=true);
         },
-        save() {
+        async save() {
             var app = this;
             if(app.sale.isPayed)
                 app.cancel();
             else {
                 app.syncing = true;
-                app.sale.save().then(()=> {
-                    app.syncing=false;
-                    router.push({ path: "/sales" });
-                });
+                await app.sale.save();
+                app.syncing=false;
+                router.push({ path: "/sales" });
             }
         },
-        pay(amountJustCredit) {
+        async pay(amountJustCredit) {
             var app = this;
             app.syncing = true;
-
-            app.sale.save().then(()=> {
-                app.syncing = false;
-                router.push({ path: "/pay/" + app.sale.id, query: { jc: amountJustCredit } });
-            });
+            var ret = await app.sale.save();
+            app.sale.id = ret.id;
+            app.syncing = false;
+            router.push({ path: "/pay/" + app.sale.id, query: { jc: amountJustCredit, saleId: app.sale.id } });
         },
         payWCredit() {
             alert("Todo");
         },
-        remove() {
+        async remove() {
             var app = this;
             if(app.$route.params.id !== "_") {
-                app.$refs.yesNoRemove.open().then(() => {
-                    app.sale.remove().then(() => router.push({ path: "/sales" }));
-                });
+                await app.$refs.yesNoRemove.open();
+                await app.sale.remove();
+                router.push({ path: "/sales" });
             }
             else
                 app.cancel();
@@ -185,14 +188,13 @@ const SalePage = {
         cancel() {
             router.push({ path: "/sales" });
         },
-        addCredit() {
+        async addCredit() {
             var app = this;
 
-            app.$refs.inp.open(0, "Guthaben im Wert von € kaufen").then(val => { 
-                val = parseFloat(val);
-                if(val > 0) 
-                    app.pay(val);                
-            });
+            var val = await app.$refs.inp.open(0, "Guthaben im Wert von € kaufen");
+            val = parseFloat(val);
+            if(val > 0) 
+                await app.pay(val);                
         },
         openPerson() {
             var app = this;

@@ -23,7 +23,7 @@ switch($method) {
         if(isset($_GET['personId'])) {
             $sql = $sql." and personId=?";
             $b = $b."i";
-            array_push($p,$_GET['personId']);
+            array_push($p,@$_GET['personId']);
         }
 
         $stmt = $conn->prepare($sql);

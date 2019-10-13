@@ -12,7 +12,7 @@ header('Content-Type: application/json');
 
 switch($method) {
     case 'GET':
-        $id = $_GET['id'];
+        $id = @$_GET['id'];
 
         if(isset($id)) {
             $stmt = $conn->prepare("SELECT * FROM article a WHERE og=? and id=?");
@@ -28,10 +28,12 @@ switch($method) {
     case 'POST':
         $p = array();
         array_push($p,getParameter("og", "s", $og));
-        array_push($p,getParameter("title", "s", $_POST['title']));
-        array_push($p,getParameter("price", "d", $_POST['price']));
+        array_push($p,getParameter("title", "s", @$_POST['title']));
+        array_push($p,getParameter("price", "d", @$_POST['price']));
         array_push($p,getParameter("isFavorite", "i", boolFromPost("isFavorite")));
-        array_push($p,getParameter("type", "s", $_POST['type']));
+        array_push($p,getParameter("isActive", "i", boolFromPost("isActive")));
+        array_push($p,getParameter("type", "s", @$_POST['type']));
+        array_push($p,getParameter("extId", "s", @$_POST['extId']));
         executeAndReturn($conn, $p, "article");
         break;
 }

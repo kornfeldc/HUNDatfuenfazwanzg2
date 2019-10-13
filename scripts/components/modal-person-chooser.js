@@ -45,7 +45,7 @@ Vue.component('modal-person-chooser', {
                 { id: "top", shortTitle: "TOP" },
                 { id: "all", shortTitle: "Alle" },
                 { id: "member", shortTitle: "Mitglieder" },
-                { id: "nomember", shortTitle: "Kursler" }
+                { id: "nomember", shortTitle: "Andere" }
             ],
             tab: storage.get("user").useTop == 1 ? "top" : "all",
             resolve: null,

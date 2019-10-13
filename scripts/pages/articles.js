@@ -8,6 +8,7 @@ const ArticlesPage = {
                 <ul>
                     <li :class="(tab == 'favorites' ? 'is-active':'')"><a @click="vibrate();tab = 'favorites';">Favoriten</a></li>
                     <li v-for="at in articleTypes" :class="(tab == at.id ? 'is-active':'')"><a @click="vibrate();tab = at.id;">{{at.shortTitle}}</a></li>
+                    <li :class="(tab == 'inactive' ? 'is-active':'')"><a @click="vibrate();tab = 'inactive';">Inaktiv</a></li>
                 </ul>
             </div>
             <article-line v-for="entry in articles" :article="entry" v-on:click="vibrate();open(entry);" :key="entry.id"/>
@@ -49,6 +50,7 @@ const ArticlesPage = {
                 app.first = false;
                 app.syncing = false;
                 app.rawarticles = articles;    
+                app.restore();
                 app.filter();
             });
         },
@@ -57,7 +59,21 @@ const ArticlesPage = {
             app.articles = Article.getFiltered(app.rawarticles, {tab: app.tab, search: app.search });
         },
         open(entry) {
+            var app = this;
+            app.$root.storedAA = { tab: app.tab, search: app.search };
             router.push({ path: '/article/'+ (entry && entry.id ? entry.id : '_') });
+        },
+        restore() {
+            var app = this;
+            if(app.$root.storedAA) {
+                app.tab = app.$root.storedAA.tab;
+                app.search = app.$root.storedAA.search;
+                app.$refs.search.set(app.search);
+                delete app.$root.storedAA;
+                return true;
+            }
+            else
+                return false;
         }
     }
 }

@@ -8,8 +8,10 @@ class Article extends BaseModel {
         this.price = 0.0;
         this.isFavorite = false;
         this.countForPerson = 0;//do not map, only used in articlechooser
+        this.extId = "";
+        this.isActive = true;
 
-        this.map = ["id","title", "type", "price", "isFavorite"];
+        this.map = ["id","title", "type", "price", "isFavorite", "extId", "isActive"];
     }
 
     static getTypes() {
@@ -61,11 +63,16 @@ class Article extends BaseModel {
             //filter by tab
             if(p.tab) 
                 x = x && (
-                    p.tab === "all" || 
+                    p.tab === "all" || p.tab === "inactive" ||
                     (p.tab === "favorites" && article.isFavorite === 1) || 
-                    (p.tab == "top" && article.countForPerson > 0) ||
+                    (p.tab == "top" && (article.countForPerson > 0 || article.isFavorite === 1)) ||
                     article.type === p.tab 
                 );
+
+            if(p.search && p.search.length > 1 && util.search(article.title, p.search))
+                return true;
+
+            x = x && ((p.tab === "inactive" && !article.isActive) || (p.tab !== "inactive" && article.isActive));                
             x = x && util.search(article.title, p.search);
             return x;
         });

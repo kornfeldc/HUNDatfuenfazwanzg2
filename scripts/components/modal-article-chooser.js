@@ -19,6 +19,18 @@ Vue.component('modal-article-chooser', {
                     </ul>
                 </div>
                 <sale-article-line v-for="article in articles" :article="article" :sale="sale" :key="article.id" @modify="(article,amount)=>modify(article,amount)"/>
+
+                <!--
+                <div v-if="search" class="columns is-mobile is-vcentered hover" @click="vibrate();createArticle();">
+                    <div class="column">
+                        <i style='min-width:30px;text-align:center' :class="'fa fa-plus f180 has-text-link' "  />
+                    </div>
+                    <div class="column is-full">
+                        <h4 class="title is-5">"{{search}}" neu anlegen</h4>
+                    </div>
+                </div>
+                -->
+
             </section>
             <footer class="modal-card-foot">
                 <button-primary @click="vibrate();ok();">OK</button-primary>
@@ -58,10 +70,6 @@ Vue.component('modal-article-chooser', {
             app.firstOnNewSale = firstOnNewSale;
             app.sale = sale;
             app.person = person;
-            if(app.person.topArticleCounts !== undefined && app.person.topArticleCounts !== null && JSON.stringify(app.person.topArticleCounts) !== "{}")
-                app.tab = "top";
-            else 
-                app.tab = "favorites";
 
             app.load(); 
 
@@ -128,6 +136,10 @@ Vue.component('modal-article-chooser', {
             var app = this;
             $(app.$refs.modal).removeClass("is-active");
             app.reject("addCredit");
-        }
+        },
+        createArticle() {
+            var app = this;
+            router.push({ path: '/article/_', query: { title: app.search, fs: true } });
+        },
     }
  });

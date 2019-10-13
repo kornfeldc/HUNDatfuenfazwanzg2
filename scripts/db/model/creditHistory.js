@@ -1,13 +1,13 @@
 class CreditHistory extends BaseModel {
 
     constructor() {
-        super("sale")
+        super("creditHistory")
         this.id="_";
         this.personId = null;
         this.credit = 0;
         this.isBought = false;
         this.saleId = null;
-        this.date = null;
+        this.date = moment().format(util.dateFormat);
         
         this.map = [
             "id","personId", "credit", "isBought", "saleId", "date"

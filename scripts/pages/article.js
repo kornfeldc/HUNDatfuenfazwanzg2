@@ -40,6 +40,12 @@ const ArticlePage = {
                     Ist Favorit
                 </label>
             </div>
+            <div class="field">
+                <label class="checkbox">
+                    <input type="checkbox" v-model="article.isActive">
+                    Ist Aktiv
+                </label>
+            </div>
         </div>
         <div class="actions">
             <div class="field is-grouped">
@@ -68,17 +74,30 @@ const ArticlePage = {
             var app = this;
             if(app.$route.params.id !== "_") 
                 Article.get(app.$route.params.id).then(article => app.article = article, () => router.push({ path: "/articles" }));
-            else 
+            else  {
                 app.article = new Article();
+                if(app.$route.query && app.$route.query.title)
+                    app.article.title = app.$route.query.title;
+            }
         },
         save() {
             var app = this;
             app.article.save().then(()=> {
-                router.push({ path: "/articles" });
+                app.back();
             });
         },
         cancel() {
-            router.push({ path: "/articles" });
-        }
+            var app = this;
+            app.back();
+        },
+        back() {
+            var app = this;
+            if(app.$route.query && app.$route.query.fs) 
+                router.go(-1)
+            else if(app.$route.query && app.$route.query.s)
+                router.go(-1)
+            else
+                router.push({ path: "/articles" });
+        },
     }
 }

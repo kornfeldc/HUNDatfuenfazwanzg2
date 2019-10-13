@@ -1,7 +1,7 @@
 const PersonPage = {
     mixins: [sessionMixin,mandatoryMixin,utilMixins],
     template: `
-    <div class="p-std">
+    <page-container :syncing="syncing">
         <div class="above_actions">
             <div class="field">
                 <label class="label">Vorname</label>
@@ -44,6 +44,14 @@ const PersonPage = {
             <div class="field">
                 <div class="control">
                     <label class="checkbox">
+                        <input type="checkbox" v-model="person.isActive">
+                        Ist Aktiv
+                    </label>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <label class="checkbox">
                         <input type="checkbox" v-model="isPersonGroup">
                         Zusammenhängende Personen
                     </label>
@@ -57,22 +65,30 @@ const PersonPage = {
                     Bitte ausfüllen
                 </p>
             </div>
-            <p class="help" v-if="person.saleCount && person.saleCount > 0">
+            <p class="help" v-if="person.isMainPerson && person.saleCount && person.saleCount > 0">
                 Verkäufe insgesamt: {{person.saleCount}} / € {{format(person.saleSum)}}
             </p>
-            <p class="help" v-if="person.saleCount && person.saleCount > 0">
+            <p class="help" v-if="person.isMainPerson && person.saleCount && person.saleCount > 0">
                 Verkäufe in den letzten 6 Monaten: {{person.topSaleCount}} / € {{format(person.topSaleSum)}}
             </p>            
-            <p class="pt-std">
+            <p class="pt-std" v-if="person.isMainPerson">
                 Aktuelles Guthaben: <strong class="has-text-link">€ {{format(person.credit)}}</strong>
             </p>            
+            <p class="pt-std" v-if="!person.isMainPerson">
+                Guthaben wird nur für die Hauptperson verwaltet
+            </p>
+            <div class="field is-grouped" v-if="!person.isMainPerson">
+                <div class="control">
+                    <button-primary-inverted @click="vibrate();openPerson(person.mainPersonId);">Hauptperson öffnen</button-primary-inverted>
+                </div>
+            </div>
         </div>
         <div class="actions">
             <div class="field is-grouped">
                 <div class="control">
                     <button-primary @click="vibrate();save();">Speichern</button-primary>
                 </div>
-                <div class="control">
+                <div class="control" v-if="person.isMainPerson">
                     <button-primary-inverted @click="vibrate();addCredit();">Guthaben +/-</button-primary-inverted>
                 </div>
                 <div class="control">
@@ -89,12 +105,13 @@ const PersonPage = {
         </div>
         <modal-input ref="inp"/>
         <modal-yesno ref="yesNoRemove" title="Person löschen" text="Soll diesee Person wirklich gelöscht werden?"/>
-    </div>
+    </page-container>
     `,
     data() {
         return {
             person: {},
-            isPersonGroup: false
+            isPersonGroup: false,
+            creditDiff: 0
         };
     },
     mounted() {
@@ -104,25 +121,32 @@ const PersonPage = {
     methods: {
         load() {
             var app = this;
-            if(app.$route.params.id !== "_") 
+            if(app.$route.params.id !== "_") {
+                app.syncing=true;            
                 Person.get(app.$route.params.id).then(person => { 
+                    app.syncing=false;            
                     app.person = person;
                     app.isPersonGroup = app.person.personGroup && app.person.personGroup.length > 0;
                 }, () => router.push({ path: "/persons" }));
+            }
             else {
                 app.person = new Person();
                 if(app.$route.query && app.$route.query.name)
                     app.person.firstName = app.$route.query.name;
             }
         },
-        save() {
+        async save() {
             var app = this;
             if(!app.isPersonGroup)
                 app.person.personGroup = "";
-            app.person.save().then(()=> {
-                //Person.correctPersons();
-                app.back();
-            });
+            const result = await app.person.save();
+            if(result && result.id && app.creditDiff != 0) {
+                var creditHistory = new CreditHistory();
+                creditHistory.personId = result.id;
+                creditHistory.credit = app.creditDiff;
+                await creditHistory.save();
+            }
+            app.back();
         },
         cancel() {
             var app = this;
@@ -142,6 +166,7 @@ const PersonPage = {
             app.$refs.inp.open(0, "Guthaben hinzufügen (für Kurs € 10)").then(val => { 
                 val = parseFloat(val);
                 app.person.credit += val;
+                app.creditDiff += val;
             });
         },
         switchName() {
@@ -160,5 +185,10 @@ const PersonPage = {
             else
                 app.cancel();
         },
+        openPerson(id) {
+            var app = this;
+            router.replace({ path: '/person/'+ id });
+            location.reload();
+        }
     }
 }

@@ -12,7 +12,7 @@ header('Content-Type: application/json');
 
 switch($method) {
     case 'GET':
-        $id = $_GET['id'];
+        $id = @$_GET['id'];
 
         if(isset($id)) {
             $stmt = $conn->prepare("SELECT * FROM credit_history WHERE og=? and id=?");
@@ -27,10 +27,9 @@ switch($method) {
 
     case 'POST':
         $p = array();
-        array_push($p,getParameter("og", "s", $og));
         array_push($p,getParameter("personId", "i", valueFromPost("personId", null)));
         array_push($p,getParameter("credit", "d", valueFromPost("credit", 0)));
-        array_push($p,getParameter("isBought", "i", boolFromPost("isBought");));
+        array_push($p,getParameter("isBought", "i", boolFromPost("isBought")));
         array_push($p,getParameter("saleId", "i", valueFromPost("saleId", null)));
         array_push($p,getParameter("date", "s", valueFromPost("date", null)));
         executeAndReturn($conn, $p, "credit_history");

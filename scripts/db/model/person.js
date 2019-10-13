@@ -14,8 +14,10 @@ class Person extends BaseModel {
         this.saleCount = 0;//do not map, only used in personchooser
         this.saleSum = 0;//do not map, only used in personchooser
         this.relatedNames = ""; //do not map, only used in personChooser
-        
-        this.map = ["id","firstName", "lastName", "isMember", "mainPersonId", "personGroup", "credit", "phone", "email"];
+        this.extId = "";
+        this.isActive = true;
+
+        this.map = ["id","firstName", "lastName", "isMember", "mainPersonId", "personGroup", "credit", "phone", "email", "extId", "isActive"];
     }
 
     get fullName() {
@@ -26,6 +28,10 @@ class Person extends BaseModel {
         if(this.personGroup && this.personGroup.length > 0)
             return this.personGroup;
         return this.fullName;
+    }
+
+    get isMainPerson() {
+        return (!this.mainPersonId || this.mainPersonId === this.id);
     }
 
     matchSearch(str) {
@@ -52,26 +58,36 @@ class Person extends BaseModel {
     static sort(persons, p) {
         return persons.sort((person1,person2) => {
             var sortProperty = "fullName"
-            if(p && p.tab === "top")
-                sortProperty = "topSaleCount";
-            return person1[sortProperty] < person2[sortProperty] ? -1 : person1[sortProperty] > person2[sortProperty] ? 1 : 0;
+            var inv = 1;
+            if(p && p.tab === "top") {
+                sortProperty = "saleCount";
+                inv = -1;
+            }
+            return person1[sortProperty] < person2[sortProperty] ? -1*inv : person1[sortProperty] > person2[sortProperty] ? 1*inv : 0;
         });
     }
 
     static getFiltered(persons, p) {
         var ret = persons.filter(person => {
             
-            if(p.chooser && person.mainPersonId != person.id) 
+            if(p.chooser && person.mainPersonId && person.mainPersonId != person.id)
                 return false;
 
             var x = true;
             if(p.tab)
                 x = x && (
-                    p.tab === "all" ||
+                    p.tab === "all" || p.tab === "inactive" ||
                     (p.tab === "member" && person.isMember) ||
                     (p.tab === "nomember" && !person.isMember) ||
-                    (p.tab === "top" && person.topSaleCount > 0)
+                    (p.tab === "top" && person.saleCount > 0)
                 );
+
+            if(p.search && p.search.length > 1 && person.matchSearch(p.search))
+                return true;
+
+            if((!p.search || p.search.length == 0)) //in chooser show only active (when not searched directly)
+                x = x && ((p.tab === "inactive" && !person.isActive) || (p.tab !== "inactive" && person.isActive));
+
             x = x && person.matchSearch(p.search);
             return x;
         });

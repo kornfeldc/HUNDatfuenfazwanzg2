@@ -14,17 +14,18 @@ class Sale extends BaseModel {
         this.articlesum = 0;
         this.addAdditionalCredit = 0;
         this.usedCredit = false;
-
+        this.extId = "";
         this.articles = [];
 
         this.map = [
             "id","personId", "personName", "saleDate", "payDate", "toPay",
-            "toReturn", "inclTip", "given", "articleSum", "addAdditionalCredit", "usedCredit"
+            "toReturn", "inclTip", "given", "articleSum", "addAdditionalCredit", "usedCredit",
+            "extId"
         ];
     }
 
     get isPayed() {
-        return this.payDate !== null;
+        return this.payDate !== null && this.payDate !== undefined;
     }
 
     get isToday() {
@@ -71,14 +72,15 @@ class Sale extends BaseModel {
                 var id = result.id || _this.id;
                 util.log("saved sale - saleId: ", id);
                 var articlePromises = [];
-                _this.articles.forEach(a => {
-
+                for(var i = 0; i < _this.articles.length; i++) {
+                    var a = _this.articles[i];
                     util.log("try to parse article to SaleArticle", a);
                     var sa = SaleArticle.fromSaleArticle(a.article,a.amount,a.id,id);
                     util.log("parsed", sa);
-                    var promise = sa.save();
+
+                    var promise = sa.save({ blockCalculation: i < _this.articles.length -1 ? -1 : 0 });
                     articlePromises.push(promise);
-                });
+                }
 
                 Promise.all(articlePromises).then(() => {
                     resolve(result);        
@@ -87,15 +89,18 @@ class Sale extends BaseModel {
         });
     }
 
-    static getOpenedSaleForPerson(person) {
-        var _this = this;
-        return new Promise((resolve,reject) => {
-            resolve(null);
-            // _this.getList().then(allSales => {
-            //     var sale = allSales.find(sale => !sale.isPayed && sale.person._id === person._id);
-            //     resolve(sale);
-            // });
-        });
+    static async getOpenedSaleForPerson(person) {
+        var result = await api.get("sale", { openedSaleForPersonId: person.id });
+        if(result && result.length > 0) {
+            var sale = this.fromArray(Sale, result)[0];
+
+            var saleArticles = await SaleArticle.getList({ saleId: sale.id});
+            sale.articles = [];
+            saleArticles.forEach(sa => sale.articles.push(Sale.parseSaleArticleForSale(sa)));
+            return sale;
+        }
+        else
+            return null;
     }
 
     static parseSaleArticleForSale(sa) {

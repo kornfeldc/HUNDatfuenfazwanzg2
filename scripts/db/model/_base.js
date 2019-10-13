@@ -18,11 +18,12 @@ class BaseModel {
         return ret;
     }
 
-    save() {
+    save(p) {
         var _this = this;
         return new Promise((resolve,reject) => {
             var obj = {};
             this.map.forEach(property => obj[property] = this[property]);
+            if(p) obj = $.extend(obj, p);
             api.set(_this.endpoint, obj).then((result) => {
                 resolve(result);
             });

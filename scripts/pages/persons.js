@@ -3,7 +3,7 @@ const PersonsPage = {
     template: `
     <page-container ref="page" :syncing="syncing">
         <div class="above_actions">
-            <search v-model="search" @changed="filter" />
+            <search v-model="search" @changed="filter" ref="search" />
             <div class="tabs" v-if="!search || search.length == 0">
                 <ul>
                     <li v-for="t in types" :class="(tab == t.id ? 'is-active':'')"><a @click="vibrate();tab = t.id;">{{t.shortTitle}}</a></li>
@@ -25,15 +25,17 @@ const PersonsPage = {
             search: "",
             types: [
                 //{ id: "top", shortTitle: "TOP" },
-                { id: "all", shortTitle: "Alle" },
+                { id: "all", shortTitle: "Alle aktiven" },
                 { id: "member", shortTitle: "Mitglieder" },
-                { id: "nomember", shortTitle: "Kursler" }
+                { id: "nomember", shortTitle: "Andere" },
+                { id: "inactive", shortTitle: "Inaktiv" }
             ],
             tab: "all",
             rawpersons: [],
             persons: [],
             isMainPage: true,
-            first: true
+            first: true,
+            saveOnDestroy: false
         };
     },
     watch: {
@@ -53,6 +55,7 @@ const PersonsPage = {
                 app.first = false;
                 app.syncing = false;
                 app.rawpersons = persons;      
+                app.restore();
                 app.filter();
             });
         },
@@ -61,7 +64,21 @@ const PersonsPage = {
             app.persons = Person.getFiltered(app.rawpersons, { search: app.search, tab: app.tab });
         },
         open(entry) {
-            router.push({ path: '/person/'+ (entry && entry.id ? entry.id : '_') });
+            var app = this;
+            app.$root.storedPA = { tab: app.tab, search: app.search };
+            router.push({ path: '/person/'+ (entry && entry.id ? entry.id : '_'), query: { s: true } });
+        },
+        restore() {
+            var app = this;
+            if(app.$root.storedPA) {
+                app.tab = app.$root.storedPA.tab;
+                app.search = app.$root.storedPA.search;
+                app.$refs.search.set(app.search);
+                delete app.$root.storedPA;
+                return true;
+            }
+            else
+                return false;
         }
     }
 }

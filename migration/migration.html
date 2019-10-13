@@ -1,0 +1,31 @@
+<html>
+    <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
+    
+    <script src="../scripts/util.js"></script>
+    <script src="../scripts/api.js"></script>
+
+    <script src="../scripts/libs/moment.js"></script>
+    <script src="../scripts/libs/thenBy.min.js"></script>
+
+    <script src="../scripts/db/model/_base.js"></script>
+    <script src="../scripts/db/model/article.js"></script>
+    <script src="../scripts/db/model/creditHistory.js"></script>
+    <script src="../scripts/db/model/person.js"></script>
+    <script src="../scripts/db/model/sale.js"></script>
+    <script src="../scripts/db/model/saleArticle.js"></script>
+
+    <script src="migration.js"></script>
+    <script>
+
+        api.url = "../api";
+
+        var promises = [];
+        var migration = new Migration();
+        //promises.push(migration.execute("articles"));
+        //promises.push(migration.execute("persons"));
+        promises.push(migration.execute("sales"));
+        Promise.all(promises).then(() => {
+            alert("done");
+        });
+    </script>
+</html>
