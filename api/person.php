@@ -60,7 +60,7 @@ switch($method) {
         //move credit to mainPerson
         $stmt = $conn->prepare("
             update person p
-            set p.credit = COALESCE(p.credit,0) + SUM((select COALESCE(p2.credit,0) from (select * from person) p2 where length(p2.personGroup)>0 and p2.personGroup = p.personGroup and p2.og=?))
+            set p.credit = COALESCE(p.credit,0) + COALESCE((select SUM(COALESCE(p2.credit,0)) from (select * from person) p2 where length(p2.personGroup)>0 and p2.personGroup = p.personGroup and p2.og=? and p2.id != p.id),0)
             where og=? and length(p.personGroup)>0 and mainPersonId = id");
         $stmt->bind_param("ss", $og, $og);
         $stmt->execute();
