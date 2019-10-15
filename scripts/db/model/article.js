@@ -18,7 +18,9 @@ class Article extends BaseModel {
         return [
             { id: "alcoholic", title: "Getränk - Alkoholisch", shortTitle: "Alk." },
             { id: "nonalcoholic", title: "Getränk - Antialkoholisch", shortTitle: "Antialk." },
-            { id: "snack", title: "Snack", shortTitle: "Snacks" }
+            { id: "snack", title: "Snacks und Jause", shortTitle: "Snacks" },
+            { id: "sweet", title: "Süßes & Mehlspeise", shortTitle: "Süßes" },
+            { id: "meal", title: "Mahlzeit", shortTitle: "Mahlzeit" }
         ];
     }
 

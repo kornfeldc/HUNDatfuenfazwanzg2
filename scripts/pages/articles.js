@@ -3,7 +3,7 @@ const ArticlesPage = {
     template: `
     <page-container ref="page" :syncing="syncing">
         <div class="above_actions">
-            <search v-model="search" @changed="filter" />
+            <search v-model="search" @changed="filter" ref="search" />
             <div class="tabs" v-if="!search || search.length == 0">
                 <ul>
                     <li :class="(tab == 'favorites' ? 'is-active':'')"><a @click="vibrate();tab = 'favorites';">Favoriten</a></li>
