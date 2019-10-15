@@ -62,10 +62,16 @@ const PersonsPage = {
         filter() {
             var app = this;
             app.persons = Person.getFiltered(app.rawpersons, { search: app.search, tab: app.tab });
+            if(app.scrollTop) {
+                app.$nextTick(() => {
+                    $(window).scrollTop(app.scrollTop);
+                    delete app.scrollTop;
+                });
+            }
         },
         open(entry) {
             var app = this;
-            app.$root.storedPA = { tab: app.tab, search: app.search };
+            app.$root.storedPA = { tab: app.tab, search: app.search, scrollTop: $(window).scrollTop() };
             router.push({ path: '/person/'+ (entry && entry.id ? entry.id : '_'), query: { s: true } });
         },
         restore() {
@@ -74,6 +80,7 @@ const PersonsPage = {
                 app.tab = app.$root.storedPA.tab;
                 app.search = app.$root.storedPA.search;
                 app.$refs.search.set(app.search);
+                app.scrollTop = app.$root.storedPA.scrollTop;
                 delete app.$root.storedPA;
                 return true;
             }

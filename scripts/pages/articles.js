@@ -57,10 +57,16 @@ const ArticlesPage = {
         filter() {
             var app = this;
             app.articles = Article.getFiltered(app.rawarticles, {tab: app.tab, search: app.search });
+            if(app.scrollTop) {
+                app.$nextTick(() => {
+                    $(window).scrollTop(app.scrollTop);
+                    delete app.scrollTop;
+                });
+            }
         },
         open(entry) {
             var app = this;
-            app.$root.storedAA = { tab: app.tab, search: app.search };
+            app.$root.storedAA = { tab: app.tab, search: app.search, scrollTop: $(window).scrollTop() };
             router.push({ path: '/article/'+ (entry && entry.id ? entry.id : '_') });
         },
         restore() {
@@ -69,6 +75,7 @@ const ArticlesPage = {
                 app.tab = app.$root.storedAA.tab;
                 app.search = app.$root.storedAA.search;
                 app.$refs.search.set(app.search);
+                app.scrollTop = app.$root.storedAA.scrollTop;
                 delete app.$root.storedAA;
                 return true;
             }
