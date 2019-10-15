@@ -47,6 +47,7 @@ const SalePage = {
         <modal-article-chooser ref="articleChooser"/>
         <modal-yesno ref="yesNoRemove" title="Verkauf löschen" text="Soll dieser Verkauf wirklich gelöscht werden?"/>
         <modal-input ref="inp"/>
+        <modal-input-text ref="inptext"/>
     </page-container>
     `,
     data() {
@@ -115,6 +116,11 @@ const SalePage = {
                             app.addArticles(firstOnNewSale);
                     }
                     else {
+
+                        var personName = await app.$refs.inptext.open("Barverkauf", "Personen-Name eingeben");
+                        person.fullName = personName;
+                        person.nameWithGroup = personName;
+
                         app.sale = new Sale();
                         app.sale.setPerson(person);
                         app.person = person;
