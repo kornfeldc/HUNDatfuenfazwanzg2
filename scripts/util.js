@@ -36,19 +36,24 @@ storage = {
 			lgc.log("window.localStorage NOT AVAILABLE");
 	},
 	get: function (key, defaultValue) {
-		if (window.localStorage) {
-			var isObject = window.localStorage.getItem(this.getKey(key) + "_ISOBJECT");
-			var val = window.localStorage.getItem(this.getKey(key));
-			if (val === undefined || val == null || val == "null") {
-				return defaultValue;
-			}
+		try {
+			if (window.localStorage) {
+				var isObject = window.localStorage.getItem(this.getKey(key) + "_ISOBJECT");
+				var val = window.localStorage.getItem(this.getKey(key));
+				if (val === undefined || val == null || val == "null") {
+					return defaultValue;
+				}
 
-			if (isObject)
-				return JSON.parse(val);
-			return val;
+				if (isObject)
+					return JSON.parse(val);
+				return val;
+			}
+			else
+				return defaultValue;
 		}
-		else
-			return defaultValue;;
+		catch(e) {
+			return defaultValue;
+		}
 	}
 };
 

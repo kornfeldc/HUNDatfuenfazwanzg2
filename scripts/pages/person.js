@@ -146,6 +146,9 @@ const PersonPage = {
                 creditHistory.credit = app.creditDiff;
                 await creditHistory.save();
             }
+
+            if(result && result.id && app.$route.query.fs) 
+                storage.set("lastSavedPersonId", result.id);
             app.back();
         },
         cancel() {
@@ -154,7 +157,7 @@ const PersonPage = {
         },
         back() {
             var app = this;
-            if(app.$route.query && app.$route.query.fs) 
+            if(app.$route.query && app.$route.query.fs)
                 router.go(-1)
             else if(app.$route.query && app.$route.query.s)
                 router.go(-1)

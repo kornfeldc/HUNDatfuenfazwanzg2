@@ -26,25 +26,33 @@ switch($method) {
         break;
 
     case 'POST':
-        $p = array();
-        array_push($p,getParameter("og", "s", $og));
-        array_push($p,getParameter("firstName", "s", @$_POST['firstName']));
-        array_push($p,getParameter("lastName", "s", @$_POST['lastName']));
-        array_push($p,getParameter("isMember", "i", boolFromPost("isMember")));
-        array_push($p,getParameter("isActive", "i", boolFromPost("isActive")));
-        array_push($p,getParameter("mainPersonId", "i", valueFromPost("mainPersonId", null)));
-        array_push($p,getParameter("personGroup", "s", @$_POST['personGroup']));
-        array_push($p,getParameter("credit", "d", valueFromPost("credit", 0)));
-        array_push($p,getParameter("phone", "s", @$_POST['phone']));
-        array_push($p,getParameter("email", "s", @$_POST['email']));
-        array_push($p,getParameter("extId", "s", @$_POST['extId']));
+        $id = @$_POST['id'];
 
-        if(isInsert()) {
-            array_push($p,getParameter("saleCount", "i", 0));
-            array_push($p,getParameter("saleSum", "i", 0));
+        if(isDelete()) {
+            $stmt = $conn->prepare("delete from person where id = ?");  $stmt->bind_param("i", $id); $stmt->execute();
+            echoStatus(true, "", "");
         }
+        else {
+            $p = array();
+            array_push($p,getParameter("og", "s", $og));
+            array_push($p,getParameter("firstName", "s", @$_POST['firstName']));
+            array_push($p,getParameter("lastName", "s", @$_POST['lastName']));
+            array_push($p,getParameter("isMember", "i", boolFromPost("isMember")));
+            array_push($p,getParameter("isActive", "i", boolFromPost("isActive")));
+            array_push($p,getParameter("mainPersonId", "i", valueFromPost("mainPersonId", null)));
+            array_push($p,getParameter("personGroup", "s", @$_POST['personGroup']));
+            array_push($p,getParameter("credit", "d", valueFromPost("credit", 0)));
+            array_push($p,getParameter("phone", "s", @$_POST['phone']));
+            array_push($p,getParameter("email", "s", @$_POST['email']));
+            array_push($p,getParameter("extId", "s", @$_POST['extId']));
 
-        executeAndReturn($conn, $p, "person");
+            if(isInsert()) {
+                array_push($p,getParameter("saleCount", "i", 0));
+                array_push($p,getParameter("saleSum", "i", 0));
+            }
+
+            executeAndReturn($conn, $p, "person");            
+        }
 
         //fix related persons
         $stmt = $conn->prepare("update person p set mainPersonId = null where length(personGroup)=0 and og=?"); 

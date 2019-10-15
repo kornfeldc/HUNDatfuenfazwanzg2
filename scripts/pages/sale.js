@@ -93,7 +93,10 @@ const SalePage = {
             }
             else {
                 try {
-                    var person = await app.$refs.personChooser.open();
+                    var lastSavedPersonId = storage.get("lastSavedPersonId");
+                    var person = lastSavedPersonId ? await Person.get(lastSavedPersonId) : await app.$refs.personChooser.open();
+                    storage.clear("lastSavedPersonId");
+
                     //person selected
                     //check if there is an open sale for this person
                     if(!person.isBar) {
