@@ -94,6 +94,11 @@ class Person extends BaseModel {
 
         return this.sort(ret, p);
     }    
+
+    static async getHistory(personId) {
+        var result = await api.get("history", { personId});
+        return result;
+    }
 }
 
 const barPerson = {

@@ -10,10 +10,13 @@ Vue.component('modal-person-chooser', {
         </header>
         <section class="modal-card-body">
             <search v-model="search" @changed="filter" />
-            <div class="tabs" v-if="!search || search.length == 0">
+            <!--<div class="tabs" v-if="!search || search.length == 0">
                 <ul>
                     <li v-for="t in types" v-if="t.id !== 'top' || useTop" :class="(tab == t.id ? 'is-active':'')"><a @click="vibrate();tab = t.id;">{{t.shortTitle}}</a></li>
                 </ul>
+            </div>-->
+            <div v-if="!search || search.length == 0" style="border-bottom: solid 1px #DFDFDF;margin-bottom:1em">
+                <pilltab v-model="tab" v-for="t in types" :id="t.id" :title="t.shortTitle" :icon="t.icon"/>
             </div>
             
             <v-touch v-on:swipeleft="onSwipe(1,$event)" v-on:swiperight="onSwipe(-1,$event)">
@@ -42,9 +45,9 @@ Vue.component('modal-person-chooser', {
             barPerson: barPerson,
             search: "",
             types: [
-                { id: "top", shortTitle: "TOP" },
+                { id: "top", shortTitle: "TOP", icon: "fa-trophy" },
                 { id: "all", shortTitle: "Alle" },
-                { id: "member", shortTitle: "Mitglieder" },
+                { id: "member", shortTitle: "Mitglieder", icon: "fa-star" },
                 { id: "nomember", shortTitle: "Andere" }
             ],
             tab: storage.get("user").useTop == 1 ? "top" : "all",

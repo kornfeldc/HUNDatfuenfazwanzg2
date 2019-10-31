@@ -10,13 +10,11 @@ Vue.component('modal-article-chooser', {
             </header>
             <section class="modal-card-body" v-if="render">
                 <search v-model="search" @changed="filter" />
-                <div class="tabs" v-if="!search || search.length == 0">
-                    <ul>
-                        <li v-if="useTop" :class="(tab == 'top' ? 'is-active':'')"><a @click="vibrate();tab = 'top';">TOP</a></li>
-                        <li :class="(tab == 'all' ? 'is-active':'')"><a @click="vibrate();tab = 'all';">Alle</a></li>
-                        <li :class="(tab == 'favorites' ? 'is-active':'')"><a @click="vibrate();tab = 'favorites';">Favoriten</a></li>
-                        <li v-for="at in articleTypes" :class="(tab == at.id ? 'is-active':'')"><a @click="vibrate();tab = at.id;">{{at.shortTitle}}</a></li>
-                    </ul>
+                <div v-if="!search || search.length == 0" style="border-bottom: solid 1px #DFDFDF;margin-bottom:1em">
+                    <pilltab v-model="tab" id="top" title="TOP" icon="fa-trophy"/>
+                    <pilltab v-model="tab" id="all" title="Alle"/>
+                    <pilltab v-model="tab" id="favorites" title="Favoriten" icon="fa-heart"/>
+                    <pilltab v-model="tab" v-for="at in articleTypes" :id="at.id" :title="at.shortTitle" :icon="at.icon"/>
                 </div>
                 <sale-article-line v-for="article in articles" :article="article" :sale="sale" :key="article.id" @modify="(article,amount)=>modify(article,amount)"/>
 

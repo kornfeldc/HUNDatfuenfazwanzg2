@@ -3,84 +3,94 @@ const PersonPage = {
     template: `
     <page-container :syncing="syncing">
         <div class="above_actions">
-            <div class="field">
-                <label class="label">Vorname</label>
-                <div class="control">
-                    <input :class="getInputClass(person,'firstName')" type="text" placeholder="Vorname" v-model="person.firstName"/>
+            <div class="tabs" v-if="!search || search.length == 0">
+                <ul>
+                    <li v-for="t in tabs" :class="(tab == t.id ? 'is-active':'')"><a @click="vibrate();tab = t.id;">{{t.shortTitle}}</a></li>
+                </ul>
+            </div>
+            <div v-show="tab == 'data'">
+                <div class="field">
+                    <label class="label">Vorname</label>
+                    <div class="control">
+                        <input :class="getInputClass(person,'firstName')" type="text" placeholder="Vorname" v-model="person.firstName"/>
+                    </div>
+                    <p class="help is-danger" v-if="!hasValue(person,'firstName')">
+                        Bitte ausfüllen
+                    </p>
                 </div>
-                <p class="help is-danger" v-if="!hasValue(person,'firstName')">
-                    Bitte ausfüllen
+                <div><i class="fas fa-exchange-alt" @click="vibrate();switchName();"/></div>
+                <div class="field">
+                    <label class="label">Nachname</label>
+                    <div class="control">
+                        <input class="input" type="text" placeholder="Nachname" v-model="person.lastName"/>
+                    </div>
+                </div>
+                <div>&nbsp;</div>
+                <div class="field">
+                    <label class="label">Telefon</label>
+                    <div class="control">
+                        <input class="input" type="number" placeholder="Telefon" v-model="person.phone"/>
+                    </div>
+                </div>
+                <div>&nbsp;</div>
+                <div class="field">
+                    <label class="label">Email</label>
+                    <div class="control">
+                        <input class="input" type="text" placeholder="Email" v-model="person.email"/>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <label class="checkbox">
+                            <input type="checkbox" v-model="person.isMember">
+                            Ist Mitglied
+                        </label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <label class="checkbox">
+                            <input type="checkbox" v-model="person.isActive">
+                            Ist Aktiv
+                        </label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <label class="checkbox">
+                            <input type="checkbox" v-model="isPersonGroup">
+                            Zusammenhängende Personen
+                        </label>
+                    </div>
+                </div>
+                <div class="field" v-if="isPersonGroup">
+                    <div class="control">
+                        <input :class="getInputClass(person,'personGroup')" type="text" placeholder="Personengruppe" v-model="person.personGroup"/>
+                    </div>
+                    <p class="help is-danger" v-if="!hasValue(person,'personGroup')">
+                        Bitte ausfüllen
+                    </p>
+                </div>
+                <p class="help" v-if="person.isMainPerson && person.saleCount && person.saleCount > 0">
+                    Verkäufe insgesamt: {{person.saleCount}} / € {{format(person.saleSum)}}
                 </p>
-            </div>
-            <div><i class="fas fa-exchange-alt" @click="vibrate();switchName();"/></div>
-            <div class="field">
-                <label class="label">Nachname</label>
-                <div class="control">
-                    <input class="input" type="text" placeholder="Nachname" v-model="person.lastName"/>
-                </div>
-            </div>
-            <div>&nbsp;</div>
-            <div class="field">
-                <label class="label">Telefon</label>
-                <div class="control">
-                    <input class="input" type="number" placeholder="Telefon" v-model="person.phone"/>
-                </div>
-            </div>
-            <div>&nbsp;</div>
-            <div class="field">
-                <label class="label">Email</label>
-                <div class="control">
-                    <input class="input" type="text" placeholder="Email" v-model="person.email"/>
-                </div>
-            </div>
-            <div class="field">
-                <div class="control">
-                    <label class="checkbox">
-                        <input type="checkbox" v-model="person.isMember">
-                        Ist Mitglied
-                    </label>
-                </div>
-            </div>
-            <div class="field">
-                <div class="control">
-                    <label class="checkbox">
-                        <input type="checkbox" v-model="person.isActive">
-                        Ist Aktiv
-                    </label>
-                </div>
-            </div>
-            <div class="field">
-                <div class="control">
-                    <label class="checkbox">
-                        <input type="checkbox" v-model="isPersonGroup">
-                        Zusammenhängende Personen
-                    </label>
-                </div>
-            </div>
-            <div class="field" v-if="isPersonGroup">
-                <div class="control">
-                    <input :class="getInputClass(person,'personGroup')" type="text" placeholder="Personengruppe" v-model="person.personGroup"/>
-                </div>
-                <p class="help is-danger" v-if="!hasValue(person,'personGroup')">
-                    Bitte ausfüllen
+                <p class="help" v-if="person.isMainPerson && person.saleCount && person.saleCount > 0">
+                    Verkäufe in den letzten 6 Monaten: {{person.topSaleCount}} / € {{format(person.topSaleSum)}}
+                </p>            
+                <p class="pt-std" v-if="person.isMainPerson">
+                    Aktuelles Guthaben: <strong class="has-text-link">€ {{format(person.credit)}}</strong>
+                </p>            
+                <p class="pt-std" v-if="!person.isMainPerson">
+                    Guthaben wird nur für die Hauptperson verwaltet
                 </p>
-            </div>
-            <p class="help" v-if="person.isMainPerson && person.saleCount && person.saleCount > 0">
-                Verkäufe insgesamt: {{person.saleCount}} / € {{format(person.saleSum)}}
-            </p>
-            <p class="help" v-if="person.isMainPerson && person.saleCount && person.saleCount > 0">
-                Verkäufe in den letzten 6 Monaten: {{person.topSaleCount}} / € {{format(person.topSaleSum)}}
-            </p>            
-            <p class="pt-std" v-if="person.isMainPerson">
-                Aktuelles Guthaben: <strong class="has-text-link">€ {{format(person.credit)}}</strong>
-            </p>            
-            <p class="pt-std" v-if="!person.isMainPerson">
-                Guthaben wird nur für die Hauptperson verwaltet
-            </p>
-            <div class="field is-grouped" v-if="!person.isMainPerson">
-                <div class="control">
-                    <button-primary-inverted @click="vibrate();openPerson(person.mainPersonId);">Hauptperson öffnen</button-primary-inverted>
+                <div class="field is-grouped" v-if="!person.isMainPerson">
+                    <div class="control">
+                        <button-primary-inverted @click="vibrate();openPerson(person.mainPersonId);">Hauptperson öffnen</button-primary-inverted>
+                    </div>
                 </div>
+            </div>
+            <div v-show="tab == 'history'">
+                <history-line v-for="entry in history.filter(h=>h.type=='credit')" :history="entry"/>
             </div>
         </div>
         <div class="actions">
@@ -111,7 +121,13 @@ const PersonPage = {
         return {
             person: {},
             isPersonGroup: false,
-            creditDiff: 0
+            creditDiff: 0,
+            tabs: [
+                { id: "data", shortTitle: "Stammdaten" },
+                { id: "history", shortTitle: "Historie" }
+            ],
+            tab: "data",
+            history: []
         };
     },
     mounted() {
@@ -122,7 +138,8 @@ const PersonPage = {
         load() {
             var app = this;
             if(app.$route.params.id !== "_") {
-                app.syncing=true;            
+                app.syncing=true;     
+                app.loadHistory();       
                 Person.get(app.$route.params.id).then(person => { 
                     app.syncing=false;            
                     app.person = person;
@@ -192,6 +209,10 @@ const PersonPage = {
             var app = this;
             router.replace({ path: '/person/'+ id });
             location.reload();
+        },
+        async loadHistory() {
+            var app = this;
+            app.history = await Person.getHistory(app.$route.params.id);
         }
     }
 }

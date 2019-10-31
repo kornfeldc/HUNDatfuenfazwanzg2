@@ -4,10 +4,15 @@ const PersonsPage = {
     <page-container ref="page" :syncing="syncing">
         <div class="above_actions">
             <search v-model="search" @changed="filter" ref="search" />
+            <!--
             <div class="tabs" v-if="!search || search.length == 0">
                 <ul>
                     <li v-for="t in types" :class="(tab == t.id ? 'is-active':'')"><a @click="vibrate();tab = t.id;">{{t.shortTitle}}</a></li>
                 </ul>
+            </div>
+            -->
+            <div v-if="!search || search.length == 0" style="border-bottom: solid 1px #DFDFDF;margin-bottom:1em">
+                <pilltab v-model="tab" v-for="t in types" :id="t.id" :title="t.shortTitle" :icon="t.icon"/>
             </div>
             <person-line v-for="entry in persons" :person="entry" v-on:click="vibrate();open(entry);" :key="entry.id"/>
         </div>
@@ -26,9 +31,9 @@ const PersonsPage = {
             types: [
                 //{ id: "top", shortTitle: "TOP" },
                 { id: "all", shortTitle: "Alle aktiven" },
-                { id: "member", shortTitle: "Mitglieder" },
+                { id: "member", shortTitle: "Mitglieder", icon: "fa-star" },
                 { id: "nomember", shortTitle: "Andere" },
-                { id: "inactive", shortTitle: "Inaktiv" }
+                { id: "inactive", shortTitle: "Inaktiv", icon: "fa-ban" }
             ],
             tab: "all",
             rawpersons: [],

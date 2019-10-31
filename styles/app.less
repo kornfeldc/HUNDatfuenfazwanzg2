@@ -1,3 +1,5 @@
+@import "colors.less";
+
 #app, body, html {
     width:100%;
     height:100%;
@@ -106,4 +108,23 @@ body.has-navbar-fixed-top, html.has-navbar-fixed-top {
     bottom: 5rem;
     width: 50%;
     left: 25%;
+}
+
+.customtag {
+    margin-right:0.5em;
+    margin-bottom:0.5em;
+
+    cursor:pointer;
+
+    &.is-link a {
+        color:white;    
+    }
+
+    i {
+        .primary-text;
+    }
+
+    &.is-link i {
+        color:white;    
+    }
 }

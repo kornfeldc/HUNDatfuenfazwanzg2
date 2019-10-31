@@ -4,13 +4,21 @@ const ArticlesPage = {
     <page-container ref="page" :syncing="syncing">
         <div class="above_actions">
             <search v-model="search" @changed="filter" ref="search" />
-            <div class="tabs" v-if="!search || search.length == 0">
+            <!--<div class="tabs" v-if="!search || search.length == 0">
                 <ul>
                     <li :class="(tab == 'favorites' ? 'is-active':'')"><a @click="vibrate();tab = 'favorites';">Favoriten</a></li>
                     <li v-for="at in articleTypes" :class="(tab == at.id ? 'is-active':'')"><a @click="vibrate();tab = at.id;">{{at.shortTitle}}</a></li>
                     <li :class="(tab == 'inactive' ? 'is-active':'')"><a @click="vibrate();tab = 'inactive';">Inaktiv</a></li>
                 </ul>
             </div>
+            -->
+
+            <div v-if="!search || search.length == 0" style="border-bottom: solid 1px #DFDFDF;margin-bottom:1em">
+                <pilltab v-model="tab" id="favorites" title="Favoriten" icon="fa-heart"/>
+                <pilltab v-model="tab" v-for="at in articleTypes" :id="at.id" :title="at.shortTitle" :icon="at.icon"/>
+                <pilltab v-model="tab" id="inactive" title="Inaktiv" icon="fa-ban"/>
+            </div>
+
             <article-line v-for="entry in articles" :article="entry" v-on:click="vibrate();open(entry);" :key="entry.id"/>
         </div>
         <div class="actions">

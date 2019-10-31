@@ -16,11 +16,11 @@ class Article extends BaseModel {
 
     static getTypes() {
         return [
-            { id: "alcoholic", title: "Getränk - Alkoholisch", shortTitle: "Alk." },
-            { id: "nonalcoholic", title: "Getränk - Antialkoholisch", shortTitle: "Antialk." },
-            { id: "snack", title: "Snacks und Jause", shortTitle: "Snacks" },
-            { id: "sweet", title: "Süßes & Mehlspeise", shortTitle: "Süßes" },
-            { id: "meal", title: "Mahlzeit", shortTitle: "Mahlzeit" }
+            { id: "alcoholic", title: "Getränk - Alkoholisch", shortTitle: "Alkoholisch", icon: "fa-beer" },
+            { id: "nonalcoholic", title: "Getränk - Antialkoholisch", shortTitle: "Antialkoholisch", icon: "fa-coffee" },
+            { id: "snack", title: "Snacks und Jause", shortTitle: "Snacks", icon: "fa-hamburger" },
+            { id: "sweet", title: "Süßes & Mehlspeise", shortTitle: "Süßes", icon: "fa-candy-cane" },
+            { id: "meal", title: "Mahlzeit", shortTitle: "Mahlzeiten", icon: "fa-utensils-alt" }
         ];
     }
 
