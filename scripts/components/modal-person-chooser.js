@@ -23,8 +23,7 @@ Vue.component('modal-person-chooser', {
             
                 <person-line :person="barPerson" v-on:click="choose(barPerson)"/>
                 <person-line v-for="entry in persons" :person="entry" v-on:click="choose(entry)" :key="entry.id" mode="chooser"/>
-                <person-line v-for="entry in persons" :person="entry" v-on:click="choose(entry)" :key="entry.id" mode="chooser"/>
-            
+                
                 <div v-if="search" class="columns is-mobile is-vcentered hover" @click="vibrate();createPerson();">
                     <div class="column">
                         <i style='min-width:30px;text-align:center' :class="'fa fa-plus f180 has-text-link' "  />

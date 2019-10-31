@@ -1,5 +1,5 @@
 //start service worker
-const VERSION ="2.0.1";
+const VERSION ="2.0.3";
 
 // if ('serviceWorker' in navigator) {
 //     navigator.serviceWorker
