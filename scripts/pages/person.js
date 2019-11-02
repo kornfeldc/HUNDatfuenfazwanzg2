@@ -3,7 +3,7 @@ const PersonPage = {
     template: `
     <page-container :syncing="syncing">
         <div class="above_actions">
-            <div class="tabs" v-if="!search || search.length == 0">
+            <div class="tabs">
                 <ul>
                     <li v-for="t in tabs" :class="(tab == t.id ? 'is-active':'')"><a @click="vibrate();tab = t.id;">{{t.shortTitle}}</a></li>
                 </ul>
@@ -90,7 +90,10 @@ const PersonPage = {
                 </div>
             </div>
             <div v-show="tab == 'history'">
-                <history-line v-for="entry in history.filter(h=>h.type=='credit')" :history="entry"/>
+                <div style="margin-bottom:1em">
+                    <pilltab v-model="historyTab" v-for="t in historyTypes" :id="t.id" :title="t.shortTitle" :icon="t.icon"/>
+                </div>
+                <history-line v-for="entry in history.filter(h=>historyTab=='all' || h.type==historyTab)" :history="entry"/>
             </div>
         </div>
         <div class="actions">
@@ -127,8 +130,24 @@ const PersonPage = {
                 { id: "history", shortTitle: "Historie" }
             ],
             tab: "data",
+            historyTab: "all",
+            historyTypes: [
+                { id: "all", shortTitle: "Alles" },
+                { id: "credit", shortTitle: "Guthaben aufgeladen" },
+                { id: "sale", shortTitle: "Verkauf" },
+            ],
             history: []
         };
+    },
+    computed: {
+        historyFiltered() {
+            var app = this;
+            return app.history.filter(h => 
+                app.historyTab === "all" ||
+                (app.historyTab === "credit" && h.credit > 0) ||
+                (app.historyTab === "sale" && h.amount > 0)
+            );
+        }
     },
     mounted() {
         var app = this;

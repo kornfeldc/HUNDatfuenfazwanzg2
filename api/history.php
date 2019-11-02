@@ -16,32 +16,32 @@ switch($method) {
 
         if(isset($personId)) {
             $stmt = $conn->prepare("
-                SELECT 
-                    'credit' type,
-                    h.saleId,
-                    h.date,
-                    h.credit amount,
-                    h.isBought
-                FROM credit_history h 
-                JOIN person p ON p.id = h.personId
-                LEFT OUTER JOIN sale s ON s.id = h.saleId
-                WHERE p.og=? and p.id=?
-                
-                UNION
-
-                SELECT
-                    'sale' type,
-                    s.id saleId,
-                    s.saleDate date,
-                    s.articleSum amount,
-                    null isBought
-                FROM sale s
-                JOIN person p ON p.id = s.personId
-                WHERE s.og=? AND p.id=?
-                
-                ORDER BY date DESC
+                    SELECT 
+                        'credit' as type,
+                        0 amount,
+                        ifnull(ch.credit,0) as credit, 
+                        ch.saleId,
+                        ch.date
+                    FROM credit_history ch
+                    WHERE ch.saleId IS NULL
+                    AND ch.personId = ?
+                    
+                    UNION
+                    
+                    SELECT
+                        'sale' as type,
+                        ifnull(s.articleSum,0) as amount,
+                        ifnull(ch2.credit,0) as credit,
+                        s.id saleId,
+                        s.saleDate as date
+                    FROM sale s
+                    LEFT OUTER JOIN credit_history ch2 ON ch2.saleId = s.id
+                    WHERE s.personId = ?
+                    ANd s.og = ?
+                    
+                    ORDER BY date DESC
                 ");
-            $stmt->bind_param("sisi", $og, $personId, $og, $personId);
+            $stmt->bind_param("iis", $personId, $personId, $og);
         }
         echoQueryAsJson(null, $stmt);
         break;
