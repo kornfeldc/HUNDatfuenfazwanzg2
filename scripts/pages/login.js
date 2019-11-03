@@ -11,7 +11,7 @@ const LoginPage = {
         <div class="field">
             <label class="label">Passwort</label>
             <div class="control">
-                <input class="input" type="password" placeholder="Passwort" v-model="password" @keyup.enter="login();"/>
+                <input class="input" type="password" placeholder="Passwort" v-model="password" @keydown.enter="login"/>
             </div>
             <p class="help is-danger" v-if="invalid">
                 Ungültige Daten
@@ -46,18 +46,20 @@ const LoginPage = {
         },
         login() {
             var app = this;
-            app.loading=true;
-            api.login(app.user, app.password)
-                .then((result) => {
-                    if(result && result.status === "ok") {
-                        storage.set("user", { og: result.og, hash: result.hash, useTop: result.useTop });
-                        app.invalid = false;
-                        app.loading = false;
-                        router.replace("/sales");
-                    }
-                    else
-                        app.loginfailed();
-                });
+            setTimeout(function() {
+                app.loading=true;
+                api.login(app.user, app.password)
+                    .then((result) => {
+                        if(result && result.status === "ok") {
+                            storage.set("user", { og: result.og, hash: result.hash, useTop: result.useTop });
+                            app.invalid = false;
+                            app.loading = false;
+                            router.replace("/sales");
+                        }
+                        else
+                            app.loginfailed();
+                    });
+            },100);
         },
         loginfailed() {
             var app = this;
