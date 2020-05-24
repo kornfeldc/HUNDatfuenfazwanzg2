@@ -12,6 +12,7 @@ class Person extends BaseModel {
         this.phone = "";
         this.email = "";
         this.saleCount = 0;//do not map, only used in personchooser
+        this.saleCountActive = 0;//do not map, only used in personchooser
         this.saleSum = 0;//do not map, only used in personchooser
         this.relatedNames = ""; //do not map, only used in personChooser
         this.extId = "";
@@ -60,7 +61,7 @@ class Person extends BaseModel {
             var sortProperty = "fullName"
             var inv = 1;
             if(p && p.tab === "top") {
-                sortProperty = "saleCount";
+                sortProperty = "saleCountActive";
                 inv = -1;
             }
             return person1[sortProperty] < person2[sortProperty] ? -1*inv : person1[sortProperty] > person2[sortProperty] ? 1*inv : 0;
@@ -79,7 +80,7 @@ class Person extends BaseModel {
                     p.tab === "all" || p.tab === "inactive" ||
                     (p.tab === "member" && person.isMember) ||
                     (p.tab === "nomember" && !person.isMember) ||
-                    (p.tab === "top" && person.saleCount > 0)
+                    (p.tab === "top" && person.saleCountActive > 0)
                 );
 
             if(p.search && p.search.length > 1 && person.matchSearch(p.search))

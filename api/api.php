@@ -155,6 +155,9 @@ function recalculate($conn, $og) {
     $stmt = $conn->prepare("update person p set p.saleCount = (select count(*) from sale s where s.personId = p.id) where p.og = ?");  
     $stmt->bind_param("s", $og); 
     $stmt->execute();
+    $stmt = $conn->prepare("update person p set p.saleCountActive = (select count(*) from sale s where s.personId = p.id and saleDate >= CURDATE() - INTERVAL 182 DAY ) where p.og = ?");  
+    $stmt->bind_param("s", $og); 
+    $stmt->execute();
     $stmt = $conn->prepare("update person p set p.saleSum = (select sum(s.articleSum) from sale s where s.personId = p.id) where p.og = ?");  
     $stmt->bind_param("s", $og); 
     $stmt->execute();

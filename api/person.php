@@ -48,6 +48,7 @@ switch($method) {
 
             if(isInsert()) {
                 array_push($p,getParameter("saleCount", "i", 0));
+                array_push($p,getParameter("saleCountActive", "i", 0));
                 array_push($p,getParameter("saleSum", "i", 0));
             }
 

@@ -74,8 +74,8 @@ const PersonPage = {
                 <p class="help" v-if="person.isMainPerson && person.saleCount && person.saleCount > 0">
                     Verkäufe insgesamt: {{person.saleCount}} / € {{format(person.saleSum)}}
                 </p>
-                <p class="help" v-if="person.isMainPerson && person.saleCount && person.saleCount > 0">
-                    Verkäufe in den letzten 6 Monaten: {{person.topSaleCount}} / € {{format(person.topSaleSum)}}
+                <p class="help" v-if="person.isMainPerson && person.saleCountActive && person.saleCountActive > 0">
+                    Verkäufe in den letzten 6 Monaten: {{person.saleCountActive}}
                 </p>            
                 <p class="pt-std" v-if="person.isMainPerson">
                     Aktuelles Guthaben: <strong class="has-text-link">€ {{format(person.credit)}}</strong>
