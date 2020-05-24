@@ -1,9 +1,9 @@
-.github
+.github/*
 .gitignore
-.git-ftp-log
-.git-ftp.ignore
+.git-ftp.log
+.git-ftp-ignore
 hfz.code-workspace
 README.md
-images
-styles/fontawesome5
+images/*
+styles/fontawesome5/*
 styles/*.less
