@@ -33,6 +33,7 @@ Vue.component('modal-article-chooser', {
             <footer class="modal-card-foot">
                 <button-primary @click="vibrate();ok();">OK</button-primary>
                 <button-primary-inverted @click="vibrate();addCredit();" v-if="!person.isBar && firstOnNewSale">Nur Guthaben kaufen</button-primary-inverted>
+                <button-success-inverted @click="vibrate();pay();" v-if="modifications && modifications.length>0">Zahlen</button-success-inverted>
                 <button-cancel @click="vibrate();cancel();"/>
             </footer>
         </div>
@@ -123,7 +124,7 @@ Vue.component('modal-article-chooser', {
             var app = this;
             $(app.$refs.modal).removeClass("is-active");
             console.log("article chooser modifications", app.modifications);
-            app.resolve(app.modifications);
+            app.resolve({ modifications: app.modifications });
         },
         cancel() {
             var app = this;
@@ -139,5 +140,11 @@ Vue.component('modal-article-chooser', {
             var app = this;
             router.push({ path: '/article/_', query: { title: app.search, fs: true } });
         },
+        pay() {
+            var app = this;
+            $(app.$refs.modal).removeClass("is-active");
+            console.log("article chooser modifications", app.modifications);
+            app.resolve({ modifications: app.modifications, params: { pay: true } });
+        }
     }
  });

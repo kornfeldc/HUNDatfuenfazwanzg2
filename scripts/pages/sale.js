@@ -136,11 +136,12 @@ const SalePage = {
         },
         addArticles(firstOnNewSale) {
             var app = this;
-            app.$refs.articleChooser.open(app.sale, app.person, firstOnNewSale).then(modifications => {
+            app.$refs.articleChooser.open(app.sale, app.person, firstOnNewSale).then(({modifications, params}) => {
                 if(modifications) {
                     app.sale.articles = modifications;
                     console.log("add articles after", app.sale.articles);
                     app.calculate();
+                    params && params.pay && app.pay();
                 }
             }, (rejectMode) => {
                 if(rejectMode === "addCredit") 

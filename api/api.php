@@ -41,6 +41,9 @@ function valueFromPost($str, $def) {
 function echoQueryAsJson($id,$stmt) {
     $stmt->execute();
     $res = $stmt->get_result();
+
+    ob_start('ob_gzhandler');
+
     if (!$id) echo '[';
     for ($i=0 ; $i<mysqli_num_rows($res) ; $i++) {
         echo ($i>0?',':'').json_encode(mysqli_fetch_object($res));
@@ -73,6 +76,8 @@ function echoStatus($ok, $message, $id) {
         $status->message = $message;
     if(isset($id) && $id != "")
         $status->id = $id;
+    
+    ob_start('ob_gzhandler');
     echo(json_encode($status));
     http_response_code(200);
 }

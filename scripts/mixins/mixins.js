@@ -49,10 +49,10 @@ var sessionMixin = {
 
 var utilMixins = {
     methods: {
-        format(n, c = 2, d = ",", t = ".") { 
-            var c = isNaN(c = Math.abs(c)) ? 2 : c,
-            d = d == undefined ? "." : d,
-            t = t == undefined ? "," : t,
+        format(n, co = 2, d2 = ",", t2 = ".") { 
+            var c = isNaN(c = Math.abs(c)) ? 2 : co;
+            var d = d2 == undefined ? "." : d2;
+            var t = t2 == undefined ? "," : t2;
             s = n < 0 ? "-" : "",
             i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
             j = (j = i.length) > 3 ? j % 3 : 0;
