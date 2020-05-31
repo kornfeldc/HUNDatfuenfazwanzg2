@@ -11,6 +11,10 @@ Vue.component('sale-line', {
                 </div>
             </div>
             <div :class="'column is-narrow ' + (sale.isPayed ? 'has-text-success' : 'warning-text')">
+                <template v-if="sale.canPayWithCredit">
+                    <i class="fas fa-badge-check has-text-success pr-1"/>
+                    <span v-if="sale.canPayWithCredit">&nbsp;&nbsp;</span>
+                </template>
                 <b>{{format(sale.articleSum)}}</b>
             </div>
         </div>

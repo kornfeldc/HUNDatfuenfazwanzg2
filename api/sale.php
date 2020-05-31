@@ -29,7 +29,7 @@ switch($method) {
                     s.*,
                     CASE WHEN mp.id IS NOT NULL THEN mp.credit ELSE p.credit END personCredit
                 FROM sale s
-                LEFT OUTER JOIN person p ON s.personId = p.id 
+                LEFT OUTER JOIN person p ON s.personId = p.id
                 LEFT OUTER JOIN person mp ON p.mainPersonId = mp.id
                 WHERE s.og=?
                 ";

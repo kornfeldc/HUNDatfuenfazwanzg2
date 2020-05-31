@@ -11,9 +11,10 @@ class Sale extends BaseModel {
         this.toReturn = 0;
         this.inclTip = 0;
         this.given = 0;
-        this.articlesum = 0;
+        this.articleSum = 0;
         this.addAdditionalCredit = 0;
         this.usedCredit = false;
+        this.personCredit = null;
         this.extId = "";
         this.articles = [];
 
@@ -48,6 +49,10 @@ class Sale extends BaseModel {
 
     get saleDateAsNr() {
         return parseInt(moment(this.saleDate, util.dateFormat).format("YYYYMMDD"),10);
+    }
+
+    get canPayWithCredit() {
+        return this.payDate === null && this.articleSum > 0 && this.articleSum < this.personCredit;
     }
 
     setPerson(person) {

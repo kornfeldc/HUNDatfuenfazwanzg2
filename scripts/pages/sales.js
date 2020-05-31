@@ -45,6 +45,7 @@ const SalesPage = {
             <div class="field is-grouped">
                 <div class="control">
                     <button-primary @click="vibrate();open();">Neuer Verkauf</button-primary>
+                    <button-success-inverted v-if="existingOpenedSalesCanBePayedWithCredit" @click="vibrate();payAllWithCredit();">Alle mit GH&nbsp;(<i class="fas fa-badge-check"/>)&nbsp;abrechnen</button-success-inverted>
                 </div>
             </div>
         </div>
@@ -77,6 +78,10 @@ const SalesPage = {
             var sum = 0;
             app.sales.filter(s => s.isPayed).forEach(s => sum += parseFloat(s.articleSum));
             return sum;
+        },
+        existingOpenedSalesCanBePayedWithCredit() {
+            var openedSalesCanBePayedWithCredit = this.sales.filter(s => s.canPayWithCredit);
+            return openedSalesCanBePayedWithCredit && openedSalesCanBePayedWithCredit.length > 0;
         }
     },
     created() {
@@ -131,6 +136,10 @@ const SalesPage = {
             }
             else
                 return false;
+        },
+        payAllWithCredit() {
+            const app = this;
+            
         }
     }
 }
