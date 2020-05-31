@@ -24,13 +24,21 @@ switch($method) {
             $stmt->bind_param("si", $og, $openedSaleForPersonId);
         }
         else {
-            $sql = "SELECT * FROM sale WHERE og=?";
+            $sql = "
+                SELECT 
+                    s.*,
+                    CASE WHEN mp.id IS NOT NULL THEN mp.credit ELSE p.credit END personCredit
+                FROM sale s
+                LEFT OUTER JOIN person p ON s.personId = p.id 
+                LEFT OUTER JOIN person mp ON p.mainPersonId = mp.id
+                WHERE s.og=?
+                ";
             $b = "s";
             $p = array($og);
 
             $day = @$_GET['day'];
             if(isset($day)) {
-                $sql = $sql." and (saleDate=? or (DATE(?) = DATE(NOW()) and payDate is null))";
+                $sql = $sql." and (s.saleDate=? or (DATE(?) = DATE(NOW()) and s.payDate is null))";
                 $b = $b."ss";
                 array_push($p,$day);
                 array_push($p,$day);
