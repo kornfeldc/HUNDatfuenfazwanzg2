@@ -79,9 +79,11 @@ const SalesPage = {
             app.sales.filter(s => s.isPayed).forEach(s => sum += parseFloat(s.articleSum));
             return sum;
         },
+        openedSalesCanBePayedWithCredit() {
+            return this.sales.filter(s => s.canPayWithCredit);
+        },
         existingOpenedSalesCanBePayedWithCredit() {
-            var openedSalesCanBePayedWithCredit = this.sales.filter(s => s.canPayWithCredit);
-            return openedSalesCanBePayedWithCredit && openedSalesCanBePayedWithCredit.length > 0;
+            return this.openedSalesCanBePayedWithCredit && this.openedSalesCanBePayedWithCredit.length > 0;
         }
     },
     created() {
@@ -137,9 +139,29 @@ const SalesPage = {
             else
                 return false;
         },
-        payAllWithCredit() {
+        async payAllWithCredit() {
             const app = this;
-            
+            app.syncing = true;
+            for(var sale of app.openedSalesCanBePayedWithCredit) {
+
+                var person = await Person.get(sale.personId);
+                person.credit -= sale.articleSum;
+                await person.save();
+
+                var creditHistory = new CreditHistory();
+                creditHistory.personId = person.id;
+                creditHistory.credit = sale.articleSum * -1;
+                creditHistory.saleId = sale.id;
+                await creditHistory.save();
+
+                sale.usedCredit = true; 
+                sale.personCreditBefore = sale.personCredit;
+                sale.personCreditAfter = sale.personCredit - sale.articleSum;
+                
+                sale.payDate = moment().format(util.dateFormat);
+                await sale.save();
+            }
+            app.load();
         }
     }
 }
