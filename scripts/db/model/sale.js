@@ -94,6 +94,26 @@ class Sale extends BaseModel {
         });
     }
 
+    async payAllWithCredit() {
+        var sale = this;
+        var person = await Person.get(sale.personId);
+        person.credit -= sale.articleSum;
+        await person.save();
+
+        var creditHistory = new CreditHistory();
+        creditHistory.personId = person.id;
+        creditHistory.credit = sale.articleSum * -1;
+        creditHistory.saleId = sale.id;
+        await creditHistory.save();
+
+        sale.usedCredit = true; 
+        sale.personCreditBefore = sale.personCredit;
+        sale.personCreditAfter = sale.personCredit - sale.articleSum;
+        
+        sale.payDate = moment().format(util.dateFormat);
+        await sale.save();
+    }
+
     static async getOpenedSaleForPerson(person) {
         var result = await api.get("sale", { openedSaleForPersonId: person.id });
         if(result && result.length > 0) {
@@ -143,6 +163,7 @@ class Sale extends BaseModel {
     static get(id) {
         return new Promise(resolve => {
             super.get("sale", Sale, id).then((sale) => {
+                sale.articleSum = parseFloat(sale.articleSum);
                 SaleArticle.getList({ saleId: sale.id}).then(saleArticles => {
                     sale.articles = [];
                     saleArticles.forEach(sa => sale.articles.push(Sale.parseSaleArticleForSale(sa)));

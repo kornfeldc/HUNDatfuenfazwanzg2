@@ -31,6 +31,9 @@ const SalePage = {
                 <div class="control" v-if="sale.articleSum != 0 && !sale.isPayed">
                     <button-success @click="vibrate();pay();">Zahlen</button-success>
                 </div>
+                <div class="control" v-if="sale.canPayWithCredit">
+                    <button-success-inverted @click="vibrate();payAllWithCredit();">mit GH&nbsp;(<i class="fas fa-badge-check"/>)&nbsp;zahlen</button-success-inverted>
+                </div>
                 <div class="control">
                     <button-cancel @click="vibrate();cancel();"/>
                 </div>
@@ -222,6 +225,13 @@ const SalePage = {
             }
             else
                 return false;
+        },
+        async payAllWithCredit() {
+            const app = this;
+            app.syncing = true;
+            await app.sale.payAllWithCredit();
+            app.syncing=false;
+            router.push({ path: "/sales" });
         }
     }
 }

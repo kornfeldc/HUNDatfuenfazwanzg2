@@ -16,11 +16,27 @@ switch($method) {
         $openedSaleForPersonId = @$_GET['openedSaleForPersonId'];
 
         if(isset($id)) {
-            $stmt = $conn->prepare("SELECT * FROM sale WHERE og=? and id=?");
+            $stmt = $conn->prepare("
+                SELECT 
+                    s.*,
+                    CASE WHEN mp.id IS NOT NULL THEN mp.credit ELSE p.credit END personCredit
+                FROM sale s 
+                LEFT OUTER JOIN person p ON s.personId = p.id
+                LEFT OUTER JOIN person mp ON p.mainPersonId = mp.id
+                WHERE s.og=? and s.id=?");
             $stmt->bind_param("si", $og, $id);
         }
         else if(isset($openedSaleForPersonId)) {
-            $stmt = $conn->prepare("SELECT * FROM sale WHERE og=? and personId=? and payDate is null");
+            $stmt = $conn->prepare("
+                SELECT 
+                    s.*,
+                    CASE WHEN mp.id IS NOT NULL THEN mp.credit ELSE p.credit END personCredit
+                FROM sale s
+                LEFT OUTER JOIN person p ON s.personId = p.id
+                LEFT OUTER JOIN person mp ON p.mainPersonId = mp.id
+                WHERE s.og=? 
+                  and s.personId=? 
+                  and s.payDate is null");
             $stmt->bind_param("si", $og, $openedSaleForPersonId);
         }
         else {

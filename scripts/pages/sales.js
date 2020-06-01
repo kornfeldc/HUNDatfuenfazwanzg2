@@ -45,7 +45,9 @@ const SalesPage = {
             <div class="field is-grouped">
                 <div class="control">
                     <button-primary @click="vibrate();open();">Neuer Verkauf</button-primary>
-                    <button-success-inverted v-if="existingOpenedSalesCanBePayedWithCredit" @click="vibrate();payAllWithCredit();">Alle mit GH&nbsp;(<i class="fas fa-badge-check"/>)&nbsp;abrechnen</button-success-inverted>
+                </div>
+                <div class="control" v-if="existingOpenedSalesCanBePayedWithCredit">
+                    <button-success-inverted @click="vibrate();payAllWithCredit();">Alle mit GH&nbsp;(<i class="fas fa-badge-check"/>)&nbsp;abrechnen</button-success-inverted>
                 </div>
             </div>
         </div>
@@ -143,23 +145,7 @@ const SalesPage = {
             const app = this;
             app.syncing = true;
             for(var sale of app.openedSalesCanBePayedWithCredit) {
-
-                var person = await Person.get(sale.personId);
-                person.credit -= sale.articleSum;
-                await person.save();
-
-                var creditHistory = new CreditHistory();
-                creditHistory.personId = person.id;
-                creditHistory.credit = sale.articleSum * -1;
-                creditHistory.saleId = sale.id;
-                await creditHistory.save();
-
-                sale.usedCredit = true; 
-                sale.personCreditBefore = sale.personCredit;
-                sale.personCreditAfter = sale.personCredit - sale.articleSum;
-                
-                sale.payDate = moment().format(util.dateFormat);
-                await sale.save();
+                await sale.payAllWithCredit();
             }
             app.load();
         }
