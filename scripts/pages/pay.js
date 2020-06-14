@@ -168,7 +168,7 @@ const PayPage = {
         afterLoad() {
             var app = this;
             app.syncing = false;
-            if(app.personCredit > app.sale.articleSum)
+            if(app.personCredit >= app.sale.articleSum)
                 app.useCredit = true;
             if(app.$route.query.jc > 0)
                 app.useCredit = false;

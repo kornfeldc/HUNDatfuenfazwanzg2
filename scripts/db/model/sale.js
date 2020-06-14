@@ -52,7 +52,7 @@ class Sale extends BaseModel {
     }
 
     get canPayWithCredit() {
-        return this.payDate === null && this.articleSum > 0 && this.articleSum < this.personCredit;
+        return this.payDate === null && this.articleSum > 0 && this.articleSum <= this.personCredit;
     }
 
     setPerson(person) {
