@@ -8,7 +8,7 @@ Vue.component('person-course', {
                     <p class="title is-5">{{person.nameWithGroup}}</p>
                 </div>
                 <div class="media-right">
-                    {{person.courseCount}} Kurs(e) frei
+                    {{person.courseCount}} Einheit(en) frei
                 </div>
             </div>
             <div class="media">
@@ -27,7 +27,8 @@ Vue.component('person-course', {
             
             <div 
                 v-for="entry in filteredCourseHistory" 
-                class="columns is-mobile is-vcentered hover">
+                class="columns is-mobile is-vcentered hover"
+                @click="deleteEntry(entry)">
                 <div class="column">
                     {{moment(entry.date,util.dateFormat).format('DD.MM.YYYY')}}
                 </div>    
@@ -40,6 +41,7 @@ Vue.component('person-course', {
             </div>
         </template>
         <modal-input-text ref="inptext"/>
+        <modal-yesno ref="yesNoRemove" title="Eintrag löschen" text="Soll dieser Eintrag gelöscht werden?"/>
     </div>
     `,
     props: {
@@ -114,6 +116,13 @@ Vue.component('person-course', {
             Person.get(app.person.id).then(person => {
                 app.person = person;
             });
+        },
+        
+        async deleteEntry(courseHistoryEntry) {
+            const app = this;
+            await app.$refs.yesNoRemove.open();
+            await CourseHistory.remove(courseHistoryEntry.id, app.person.id);
+            await app.reload();
         }
     }
  });

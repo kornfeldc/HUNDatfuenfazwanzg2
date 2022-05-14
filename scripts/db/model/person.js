@@ -17,6 +17,7 @@ class Person extends BaseModel {
         this.saleSum = 0;//do not map, only used in personchooser
         this.relatedNames = ""; //do not map, only used in personChooser
         this.courseHistoryCount = 0; // do not map
+        this.lastBookedCourse = null; // do not map
         this.extId = "";
         this.isActive = true;
 
@@ -82,7 +83,8 @@ class Person extends BaseModel {
                     p.tab === "all" || p.tab === "inactive" ||
                     (p.tab === "member" && person.isMember) ||
                     (p.tab === "nomember" && !person.isMember) ||
-                    (p.tab === "top" && person.saleCountActive > 0)
+                    (p.tab === "top" && person.saleCountActive > 0) ||
+                    (p.tab === "course" && person.courseHistoryCount > 0)
                 );
 
             if(p.search && p.search.length > 1 && person.matchSearch(p.search))

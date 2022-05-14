@@ -45,4 +45,10 @@ class CourseHistory extends BaseModel {
 
         return this.sort(ret, p);
     }
+    
+    static async remove(id, personId) {
+        const courseHistory = new CourseHistory();
+        courseHistory.id = id;
+        await courseHistory.remove({ personId });
+    }
 }

@@ -21,23 +21,36 @@ switch($method) {
         }
         else {
             $stmt = $conn->prepare("SELECT * FROM course_history WHERE personId=? ORDER BY date DESC, id DESC");
-             $stmt->bind_param("i", $personId);
+            $stmt->bind_param("i", $personId);
         }
         echoQueryAsJson($id, $stmt);
         break;
 
     case 'POST':
-        $p = array();
-        array_push($p,getParameter("personId", "i", valueFromPost("personId", null)));
-        array_push($p,getParameter("courses", "d", valueFromPost("courses", 0)));
-        array_push($p,getParameter("date", "s", valueFromPost("date", null)));
-        executeAndReturn($conn, $p, "course_history");
+    
+        if(isDelete()) {
+            $id = @$_POST['id'];
+            
+            $stmt = $conn->prepare("DELETE FROM course_history WHERE id = ?");  
+            $stmt->bind_param("i", $id); 
+            $stmt->execute();
+            
+            echoStatus(true, "", "");
+        }
+        else {
+            $p = array();
+            array_push($p,getParameter("personId", "i", valueFromPost("personId", null)));
+            array_push($p,getParameter("courses", "d", valueFromPost("courses", 0)));
+            array_push($p,getParameter("date", "s", valueFromPost("date", null)));
+            executeAndReturn($conn, $p, "course_history");
+        }
         
         //recalculate courseCount
         $personId = valueFromPost("personId", null);
         $stmt = $conn->prepare("update person p set courseCount = (select sum(ch.courses) from course_history ch where ch.personId = p.id) where p.id = ?"); 
         $stmt->bind_param("i", $personId);
         $stmt->execute();  
+        
         break;
 }
 $conn->close();

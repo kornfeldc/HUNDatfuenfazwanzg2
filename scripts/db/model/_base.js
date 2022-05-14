@@ -30,10 +30,11 @@ class BaseModel {
         });
     }
 
-    remove() {
+    remove(params) {
         var _this = this;
         return new Promise((resolve,reject) => {
             var obj = { id: _this.id, delete: 1 };
+            if(params) obj = { ...obj, ...params };
             api.set(_this.endpoint, obj).then((result) => {
                 resolve(result);
             });
