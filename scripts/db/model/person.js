@@ -9,16 +9,18 @@ class Person extends BaseModel {
         this.mainPersonId = null;
         this.personGroup = "";
         this.credit = 0;
+        this.courseCount = 0;
         this.phone = "";
         this.email = "";
         this.saleCount = 0;//do not map, only used in personchooser
         this.saleCountActive = 0;//do not map, only used in personchooser
         this.saleSum = 0;//do not map, only used in personchooser
         this.relatedNames = ""; //do not map, only used in personChooser
+        this.courseHistoryCount = 0; // do not map
         this.extId = "";
         this.isActive = true;
 
-        this.map = ["id","firstName", "lastName", "isMember", "mainPersonId", "personGroup", "credit", "phone", "email", "extId", "isActive"];
+        this.map = ["id","firstName", "lastName", "isMember", "mainPersonId", "personGroup", "credit", "courseCount", "phone", "email", "extId", "isActive"];
     }
 
     get fullName() {
@@ -98,6 +100,11 @@ class Person extends BaseModel {
 
     static async getHistory(personId) {
         var result = await api.get("history", { personId});
+        return result;
+    }
+
+    static async getCourseHistory(personId) {
+        var result = await api.get("courseHistory", { personId});
         return result;
     }
 }

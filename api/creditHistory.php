@@ -11,6 +11,8 @@ $method = $_SERVER['REQUEST_METHOD'];
 header('Content-Type: application/json');
 
 switch($method) {
+
+    /*
     case 'GET':
         $id = @$_GET['id'];
 
@@ -24,6 +26,7 @@ switch($method) {
         }
         echoQueryAsJson($id, $stmt);
         break;
+    */
 
     case 'POST':
         $p = array();

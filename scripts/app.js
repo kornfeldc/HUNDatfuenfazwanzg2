@@ -5,7 +5,8 @@ const VERSION ="2.0.9";
 const router = new VueRouter({
     routes:  [
          { path: '/articles', component: ArticlesPage, meta: { title:"Artikel" } },
-         { path: '/persons', component: PersonsPage, meta: { title: "Personen" } },
+         { path: '/course', component: CoursePage, meta: { title: "Kurs" } },
+         { path: '/persons', component: PersonsPage, meta: { title: "Personen" } }  ,
          { path: '/sales', component: SalesPage, meta: { title: "Verkauf" } },
          { path: '/logout', component: LogoutPage, meta: { title: "Logout" } },
          { path: '/login', component: LoginPage, meta: { title: "Login" } },

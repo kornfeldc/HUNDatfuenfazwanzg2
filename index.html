@@ -40,6 +40,7 @@
                 <div class="navbar-end">
                     <template>
                         <router-link class="navbar-item link" to="/sales" v-show="isLoggedIn">Verkauf</router-link>
+                        <!--<router-link class="navbar-item link" to="/course" v-show="isLoggedIn">Kurs</router-link>-->
                         <router-link class="navbar-item link" to="/persons" v-show="isLoggedIn">Personen</router-link>
                         <router-link class="navbar-item link" to="/articles" v-show="isLoggedIn">Artikel</router-link>
                         <router-link class="navbar-item link" to="/logout" v-show="isLoggedIn">Ausloggen</router-link>
@@ -69,6 +70,7 @@
 
     <script src="scripts/db/model/_base.js"></script>
     <script src="scripts/db/model/article.js"></script>
+    <script src="scripts/db/model/courseHistory.js"></script>
     <script src="scripts/db/model/creditHistory.js"></script>
     <script src="scripts/db/model/person.js"></script>
     <script src="scripts/db/model/sale.js"></script>
@@ -78,6 +80,7 @@
 
     <script src="scripts/pages/articles.js"></script>
     <script src="scripts/pages/article.js"></script>
+    <script src="scripts/pages/course.js"></script>
     <script src="scripts/pages/login.js"></script>
     <script src="scripts/pages/logout.js"></script>
     <script src="scripts/pages/pay.js"></script>
@@ -87,6 +90,7 @@
     <script src="scripts/pages/sale.js"></script>
 
     <script src="scripts/components/buttons.js"></script>
+    <script src="scripts/components/person-course.js"></script>
     <script src="scripts/components/person-line.js"></script>
     <script src="scripts/components/sale-article-line.js"></script>
     <script src="scripts/components/sale-line.js"></script>

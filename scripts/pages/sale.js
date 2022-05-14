@@ -3,7 +3,7 @@ const SalePage = {
     template: `
     <page-container :syncing="syncing">
         <div class="above_actions" v-if="sale.personId && render">
-            <sale-person :sale="sale" :person="person" @click="vibrate();openPerson();"/>
+            <sale-person :sale="sale" :person="person" @click="vibrate();openPerson();" @courses-click="vibrate();openPerson('course');"/>
 
             <div class="box">
                 <div class="media p-1">
@@ -209,11 +209,11 @@ const SalePage = {
             if(val > 0) 
                 await app.pay(val);                
         },
-        openPerson() {
+        openPerson(tab = "data") {
             var app = this;
             if(app.person.id  !== -1) {
                 app.saveOnDestroy = true;
-                router.push({ path: "/person/"+app.person.id, query: { s: app.sale.id } });
+                router.push({ path: "/person/"+app.person.id, query: { s: app.sale.id, tab } });
             }
         },
         restore() {

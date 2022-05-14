@@ -12,10 +12,18 @@ Vue.component('sale-person', {
         </div>
         <div class="media" v-if="!person.isBar">
             <div class="media-content">
-                Guthaben<!-- <button class="ml-std button is-small is-outlined is-link" @click="addCredit">Aufladen</button>-->
+                Guthaben
             </div>
             <div class="media-right">
                 € {{format(personCredit)}}
+            </div>
+        </div>
+        <div class="media" v-if="person.courseHistoryCount > 0" @click="e=> { e.stopPropagation(); e.preventDefault(); $emit('courses-click'); }">
+            <div :class="'media-content ' + (person.courseCount <= 0 ? 'red-text' : '') " >
+                Kurse Frei
+            </div>
+            <div :class="'media-right ' + (person.courseCount <= 0 ? 'red-text' : '') " >
+                {{person.courseCount}}
             </div>
         </div>
         <div class="field pt-std" v-if="mode === 'pay' && !person.isBar">

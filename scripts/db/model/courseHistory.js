@@ -1,42 +1,39 @@
-class CreditHistory extends BaseModel {
+class CourseHistory extends BaseModel {
 
     constructor() {
-        super("creditHistory")
+        super("courseHistory")
         this.id="_";
         this.personId = null;
-        this.credit = 0;
-        this.isBought = false;
-        this.saleId = null;
+        this.courses = 0;
         this.date = moment().format(util.dateFormat);
         
         this.map = [
-            "id","personId", "credit", "isBought", "saleId", "date"
+            "id","personId", "courses", "date"
         ];
     }
 
-    /*
     static getList() {
         return new Promise(resolve => {
-            api.get("creditHistory").then(result => {
-                resolve(this.fromArray(CreditHistory, result));
+            api.get("courseHistory").then(result => {
+                resolve(this.fromArray(CourseHistory, result));
             });
         });
     }
-    
+
     static get(id) {
-        return super.get("creditHistory", CreditHistory, id);
+        return super.get("courseHistory", CourseHistory, id);
     }
-    
-    static sort(creditHistories, p) {
-        return creditHistories;
+
+    static sort(courseHistories, p) {
+        return courseHistories;
         // return sales.sort((sale1,sale2) => {
         //      var sortProperty = "title";
         //      return sale1[sortProperty] < sale2[sortProperty] ? -1 : sale1[sortProperty] > sale2[sortProperty] ? 1 : 0;
         // });
     }
-    
-    static getFiltered(creditHistories, p) {
-        var ret = creditHistories.filter(creditHistory => {
+
+    static getFiltered(courseHistories, p) {
+        var ret = courseHistories.filter(courseHistory => {
             var x = true;
 
             //filter by tab
@@ -48,5 +45,4 @@ class CreditHistory extends BaseModel {
 
         return this.sort(ret, p);
     }
-    */
 }

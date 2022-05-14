@@ -89,6 +89,9 @@ const PersonPage = {
                     </div>
                 </div>
             </div>
+            <div v-show="tab == 'course'">
+                <person-course :person="person">
+            </div>
             <div v-show="tab == 'history'">
                 <div style="margin-bottom:1em">
                     <pilltab v-model="historyTab" v-for="t in historyTypes" :id="t.id" :title="t.shortTitle" :icon="t.icon"/>
@@ -127,7 +130,8 @@ const PersonPage = {
             creditDiff: 0,
             tabs: [
                 { id: "data", shortTitle: "Stammdaten" },
-                { id: "history", shortTitle: "Historie" }
+                { id: "course", shortTitle: "Kurs" },
+                { id: "history", shortTitle: "Verkäufe/Guthaben" }
             ],
             tab: "data",
             historyTab: "all",
@@ -163,6 +167,10 @@ const PersonPage = {
                     app.syncing=false;            
                     app.person = person;
                     app.isPersonGroup = app.person.personGroup && app.person.personGroup.length > 0;
+                    
+                    if(app.$route.query.tab) 
+                        app.tab = app.$route.query.tab;
+
                 }, () => router.push({ path: "/persons" }));
             }
             else {
