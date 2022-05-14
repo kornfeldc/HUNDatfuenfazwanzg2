@@ -20,7 +20,7 @@ switch($method) {
             $stmt->bind_param("i", $id);
         }
         else {
-            $stmt = $conn->prepare("SELECT * FROM course_history WHERE personId=? ORDER BY date DESC");
+            $stmt = $conn->prepare("SELECT * FROM course_history WHERE personId=? ORDER BY date DESC, id DESC");
              $stmt->bind_param("i", $personId);
         }
         echoQueryAsJson($id, $stmt);
