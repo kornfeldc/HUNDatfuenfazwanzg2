@@ -34,8 +34,9 @@ switch($method) {
         executeAndReturn($conn, $p, "course_history");
         
         //recalculate courseCount
+        $personId = @$_GET['personId'];
         $stmt = $conn->prepare("update person p set courseCount = (select sum(ch.courses) from course_history ch where ch.personId = p.id) where p.id = ?"); 
-        $stmt->bind_param("i", valueFromPost("personId", null));
+        $stmt->bind_param("i", $personId);
         $stmt->execute();  
         break;
 }
