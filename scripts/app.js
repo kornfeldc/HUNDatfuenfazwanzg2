@@ -1,5 +1,4 @@
-//start service worker
-const VERSION ="2.1.2";
+const VERSION ="2.1.3";
 
 //define routes
 const router = new VueRouter({
