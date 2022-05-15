@@ -90,7 +90,7 @@ const PersonPage = {
                 </div>
             </div>
             <div v-show="tab == 'course'">
-                <person-course :person="person">
+                <person-course :person="person" @save-person="savePersonFromCourse">
             </div>
             <div v-show="tab == 'history'">
                 <div style="margin-bottom:1em">
@@ -180,10 +180,18 @@ const PersonPage = {
             }
         },
         async save() {
+            const app = this;
+            await app.savePerson();
+            app.back();
+        },
+        async savePerson() {
             var app = this;
             if(!app.isPersonGroup)
                 app.person.personGroup = "";
             const result = await app.person.save();
+            if(result && result.id)
+                app.person.id = result.id;
+            
             if(result && result.id && app.creditDiff != 0) {
                 var creditHistory = new CreditHistory();
                 creditHistory.personId = result.id;
@@ -191,9 +199,13 @@ const PersonPage = {
                 await creditHistory.save();
             }
 
-            if(result && result.id && app.$route.query.fs) 
+            if(result && result.id && app.$route.query.fs)
                 storage.set("lastSavedPersonId", result.id);
-            app.back();
+        },
+        async savePersonFromCourse({ callback }) {
+            const app = this;
+            await app.savePerson();
+            callback(app.person);
         },
         cancel() {
             var app = this;

@@ -72,6 +72,28 @@ Vue.component('person-course', {
         }
     },
     methods: {
+        
+        checkPersonId() {
+            const app = this;
+            return new Promise((resolve,reject) => {
+                if(app.person.id > 0) {
+                    resolve();
+                    return;
+                }
+                
+                app.$emit("save-person", {
+                    callback: _ => {
+                        if(app.person.id > 0)
+                            resolve();
+                        else 
+                            reject();
+                    }
+                });
+                
+            });
+        },
+        
+        
         async book() {
             const app = this;
             const day = await app.$refs.inptext.open(moment().format("DD.MM.YYYY"), "Datum");    
@@ -102,6 +124,7 @@ Vue.component('person-course', {
         
         async saveCourseHistory(day, units) {
             const app = this;
+            await app.checkPersonId();
             const courseHistory = new CourseHistory();
             courseHistory.personId = app.person.id;
             courseHistory.courses = units;
