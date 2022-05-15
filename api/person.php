@@ -15,11 +15,11 @@ switch($method) {
         $id = @$_GET['id'];
 
         if(isset($id)) {
-            $stmt = $conn->prepare("SELECT p.*, (SELECT GROUP_CONCAT(CONCAT(p2.lastName,' ',p2.firstName) SEPARATOR ', ') FROM person p2 WHERE p2.mainPersonId = p.mainPersonId and p2.og = p.og) relatedNames, (SELECT count(*) FROM course_history ch WHERE ch.personId = p.id) courseHistoryCount, (SELECT max(date) FROM course_history ch WHERE ch.personId = p.id and courses < 0) lastBookedCourse FROM person p WHERE p.og=? and p.id=?");
+            $stmt = $conn->prepare("SELECT p.*, (SELECT GROUP_CONCAT(CONCAT(p2.lastName,' ',p2.firstName) SEPARATOR ', ') FROM person p2 WHERE p2.mainPersonId = p.mainPersonId and p2.og = p.og) relatedNames, IFNULL((SELECT count(*) FROM course_history ch WHERE ch.personId = p.id),0) courseHistoryCount, (SELECT max(date) FROM course_history ch WHERE ch.personId = p.id and courses < 0) lastBookedCourse FROM person p WHERE p.og=? and p.id=?");
             $stmt->bind_param("si", $og, $id);
         }
         else {
-            $stmt = $conn->prepare("SELECT p.*, (SELECT GROUP_CONCAT(CONCAT(p2.lastName,' ',p2.firstName) SEPARATOR ', ') FROM person p2 WHERE p2.mainPersonId = p.mainPersonId and p2.og = p.og) relatedNames, (SELECT count(*) FROM course_history ch WHERE ch.personId = p.id) courseHistoryCount, (SELECT max(date) FROM course_history ch WHERE ch.personId = p.id and courses < 0) lastBookedCourse FROM person p WHERE p.og=?");
+            $stmt = $conn->prepare("SELECT p.*, (SELECT GROUP_CONCAT(CONCAT(p2.lastName,' ',p2.firstName) SEPARATOR ', ') FROM person p2 WHERE p2.mainPersonId = p.mainPersonId and p2.og = p.og) relatedNames, IFNULL((SELECT count(*) FROM course_history ch WHERE ch.personId = p.id),0) courseHistoryCount, (SELECT max(date) FROM course_history ch WHERE ch.personId = p.id and courses < 0) lastBookedCourse FROM person p WHERE p.og=?");
             $stmt->bind_param("s", $og);
         }
         echoQueryAsJson($id, $stmt);

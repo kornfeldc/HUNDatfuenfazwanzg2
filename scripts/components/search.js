@@ -33,7 +33,8 @@ Vue.component('search', {
     },
     methods: {
         clear() {
-            var app = this;
+            const app = this;
+            app.val = "";
             app.$emit("input", "");
             app.$emit("changed");
         },

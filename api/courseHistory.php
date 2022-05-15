@@ -47,7 +47,7 @@ switch($method) {
         
         //recalculate courseCount
         $personId = valueFromPost("personId", null);
-        $stmt = $conn->prepare("update person p set courseCount = (select sum(ch.courses) from course_history ch where ch.personId = p.id) where p.id = ?"); 
+        $stmt = $conn->prepare("update person p set courseCount = IFNULL((select sum(ch.courses) from course_history ch where ch.personId = p.id),0) where p.id = ?"); 
         $stmt->bind_param("i", $personId);
         $stmt->execute();  
         

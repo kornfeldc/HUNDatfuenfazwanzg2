@@ -40,7 +40,8 @@ Vue.component('person-course', {
                 </div>
             </div>
         </template>
-        <modal-input-text ref="inptext"/>
+         <modal-input ref="inpnumber"/>
+        <modal-input-date ref="inpdate"/>
         <modal-yesno ref="yesNoRemove" title="Eintrag löschen" text="Soll dieser Eintrag gelöscht werden?"/>
     </div>
     `,
@@ -96,13 +97,13 @@ Vue.component('person-course', {
         
         async book() {
             const app = this;
-            const day = await app.$refs.inptext.open(moment().format("DD.MM.YYYY"), "Datum");    
-            if(!moment(day,"DD.MM.YYYY", true).isValid()) {
+            const day = await app.$refs.inpdate.open(moment().format("YYYY-MM-DD"), "Datum");    
+            if(!moment(day,"YYYY-MM-DD", true).isValid()) {
                 alert("Ungültiges Datum");
                 return;
             }
 
-            await this.saveCourseHistory(moment(day,"DD.MM.YYYY", true), -1);
+            await this.saveCourseHistory(moment(day,"YYYY-MM-DD", true), -1);
         },
         
         async loadCourseHistory() {
@@ -113,7 +114,7 @@ Vue.component('person-course', {
 
         async reCharge() {
             const app = this;
-            const units = await app.$refs.inptext.open(10, "Einheiten aufladen");
+            const units = await app.$refs.inpnumber.open(10, "Einheiten aufladen");
             if (isNaN(units)) {
                 alert("Ungültige Zahl");
                 return;
