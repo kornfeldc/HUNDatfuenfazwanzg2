@@ -17,6 +17,7 @@ switch($method) {
         if(isset($personId)) {
             $stmt = $conn->prepare("
                     SELECT 
+                        ch.id,
                         'credit' as type,
                         0 amount,
                         ifnull(ch.credit,0) as credit, 
@@ -30,6 +31,7 @@ switch($method) {
                     UNION
                     
                     SELECT
+                        s.id, 
                         'sale' as type,
                         ifnull(s.articleSum,0) as amount,
                         ifnull(ch2.credit,0) as credit,
@@ -41,7 +43,7 @@ switch($method) {
                     WHERE s.personId = ?
                     ANd s.og = ?
                     
-                    ORDER BY date DESC
+                    ORDER BY date DESC, id DESC
                 ");
             $stmt->bind_param("iis", $personId, $personId, $og);
         }
