@@ -6,6 +6,9 @@ const SalePage = {
             <sale-person :sale="sale" :person="person" @click="vibrate();openPerson();" @courses-click="vibrate();openPerson('course');"/>
 
             <div class="box">
+                <p class="media p-1" v-if="sale.isPayed">
+                    {{saleDate}}<span v-if="payDate != saleDate" class="has-text-grey">&nbsp;(bezahlt am <b>{{payDate}})</b></span>
+                </p>
                 <div class="media p-1">
                     <div class="media-content">
                         Summe <button class="ml-std button is-small is-outlined is-link" @click="vibrate();addArticles();" v-if="!sale.isPayed">Artikel hinzufügen</button>
@@ -60,6 +63,16 @@ const SalePage = {
             render: true,
             saveOnDestroy: false
         };
+    },
+    computed: {
+        saleDate() {
+            var app = this;
+            return moment(app.sale.saleDate,util.dateFormat).format("DD.MM.YYYY");
+        },
+        payDate() {
+            var app = this;
+            return moment(app.sale.payDate,util.dateFormat).format("DD.MM.YYYY");
+        }
     },
     destroyed() {
         var app = this;

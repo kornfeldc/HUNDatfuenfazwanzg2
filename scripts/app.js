@@ -1,4 +1,4 @@
-const VERSION ="2.1.3";
+const VERSION ="2.1.4";
 
 //define routes
 const router = new VueRouter({

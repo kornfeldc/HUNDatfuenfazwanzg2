@@ -21,7 +21,8 @@ switch($method) {
                         0 amount,
                         ifnull(ch.credit,0) as credit, 
                         ch.saleId,
-                        ch.date
+                        ch.date,
+                        ch.date as additionalDate
                     FROM credit_history ch
                     WHERE ch.saleId IS NULL
                     AND ch.personId = ?
@@ -33,7 +34,8 @@ switch($method) {
                         ifnull(s.articleSum,0) as amount,
                         ifnull(ch2.credit,0) as credit,
                         s.id saleId,
-                        s.saleDate as date
+                        s.payDate as date,
+                        s.saleDate as additionalDate
                     FROM sale s
                     LEFT OUTER JOIN credit_history ch2 ON ch2.saleId = s.id
                     WHERE s.personId = ?

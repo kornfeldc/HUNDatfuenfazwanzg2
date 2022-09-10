@@ -4,6 +4,7 @@ Vue.component('history-line', {
     <div class="columns is-mobile is-vcentered hover" @click="click">
         <div class="column is-narrow">
             {{date}}
+            <div v-if="date !== additionalDate" class="has-text-grey is-size-7">{{additionalDate}}</div>
         </div>    
         <div class="column">
             <span v-if="history.type == 'sale'">Verkauf</span>
@@ -24,6 +25,10 @@ Vue.component('history-line', {
         date() {
             var app = this;
             return moment(app.history.date,util.dateFormat).format("DD.MM.YYYY");
+        },
+        additionalDate() {
+            var app = this;
+            return moment(app.history.additionalDate,util.dateFormat).format("DD.MM.YYYY");
         }
     },
     methods: {
