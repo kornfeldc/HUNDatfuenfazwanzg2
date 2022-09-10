@@ -42,6 +42,7 @@ switch($method) {
                     LEFT OUTER JOIN credit_history ch2 ON ch2.saleId = s.id
                     WHERE s.personId = ?
                     ANd s.og = ?
+                    AND s.payDate is not null
                     
                     ORDER BY date DESC, id DESC
                 ");
