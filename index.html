@@ -12,123 +12,12 @@
 
   <title>HUNDatfuenfazwang</title>
 
-  <link rel="stylesheet" href="styles/bulma.css">
-  <link rel="stylesheet" href="styles/fontawesome5/css/all.css"/>
-  <link rel="stylesheet" href="styles/app.css"/>
-  <link rel="stylesheet" href="styles/colors.css"/>
-  
+    <script type="text/javascript">
+      const randomId = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+              (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+      );
+      window.location.href="main.html?"+randomId;
+    </script>
 </head>
 <body>
-    <div id="app" style="display:none" :class="(!isLoggedIn || !groupTitle ? 'nli' : '')">
-        <nav class="navbar is-fixed-top has-shadow" role="navigation" aria-label="main navigation">
-            <div class="navbar-brand">
-                <a class="navbar-item" style="padding-right:0">
-                    <img src="images/logo.svg" style="max-height:4.5rem" @click.stop="reload">
-                </a>
-
-                <a class="navbar-item" style="flex-direction: column; align-items: flex-start">
-                    <h3 class="title primary-text is-4" style="padding-top:10px">HUNDatfuenfazwanzg</h3>
-                    <h5 class="subtitle primary-text is-5" v-if="groupTitle">{{groupTitle}} - {{$route.meta.title}}</h5>
-                    <h5 class="subtitle primary-text is-5" v-if="!groupTitle">{{$route.meta.title}}</h5>
-                </a>
-
-                <a style="margin-top:7px" role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                </a>
-            </div>
-
-            <div id="navbarBasicExample" class="navbar-menu">
-                <div class="navbar-end">
-                    <template>
-                        <router-link class="navbar-item link" to="/sales" v-show="isLoggedIn">Verkauf</router-link>
-                        <router-link class="navbar-item link" to="/course" v-show="isLoggedIn">Kurs</router-link>
-                        <router-link class="navbar-item link" to="/persons" v-show="isLoggedIn">Personen</router-link>
-                        <router-link class="navbar-item link" to="/articles" v-show="isLoggedIn">Artikel</router-link>
-                        <router-link class="navbar-item link" to="/logout" v-show="isLoggedIn">Ausloggen</router-link>
-                        <span style="padding:1em;color:#808080;font-size:80%">Version {{version}}</span>
-
-                    </template>
-                </div>
-
-            </div>
-        </nav>
-        <router-view></router-view>
-    </div>
-    <div id="logo" style="display:none;margin:0 auto;width:100%;height:100%;text-align:center">
-        <img src="images/logo.svg" style="height:50%">
-    </div>
-   
-    <script src="scripts/libs/jquery.js"></script>
-   
-    <script src="scripts/libs/vue.js"></script>
-    <script src="scripts/libs/vue-router.js"></script>
-    <script src="scripts/libs/moment.min.js"></script>
-    <script src="scripts/libs/thenBy.min.js"></script>
-
-    <script>
-        const includes = [
-            "scripts/api.js",
-            "scripts/util.js",
-            
-            "scripts/db/model/_base.js",
-            "scripts/db/model/article.js",
-            "scripts/db/model/courseHistory.js",
-            "scripts/db/model/creditHistory.js",
-            "scripts/db/model/person.js",
-            "scripts/db/model/sale.js",
-            "scripts/db/model/saleArticle.js",
-            
-            "scripts/mixins/mixins.js",
-
-            "scripts/components/buttons.js",
-            "scripts/components/course-person-card.js",
-            "scripts/components/person-course.js",
-            "scripts/components/person-line.js",
-            "scripts/components/sale-article-line.js",
-            "scripts/components/sale-line.js",
-            "scripts/components/article-line.js",
-            "scripts/components/history-line.js",
-            "scripts/components/page-container.js",
-            "scripts/components/pilltab.js",
-            "scripts/components/modal-article-chooser.js",
-            "scripts/components/modal-day-chooser.js",
-            "scripts/components/modal-input.js",
-            "scripts/components/modal-input-date.js",
-            "scripts/components/modal-input-text.js",
-            "scripts/components/modal-person-chooser.js",
-            "scripts/components/modal-yesno.js",
-            "scripts/components/search.js",
-            "scripts/components/sale-person.js",
-            
-            "scripts/pages/articles.js",
-            "scripts/pages/article.js",
-            "scripts/pages/course.js",
-            "scripts/pages/login.js",
-            "scripts/pages/logout.js",
-            "scripts/pages/pay.js",
-            "scripts/pages/persons.js",
-            "scripts/pages/person.js",
-            "scripts/pages/sales.js",
-            "scripts/pages/sale.js",
-            
-            "scripts/app.js"
-        ];
-        
-        const randomId = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-        );
-        
-        includes.forEach(source => {
-            const script = document.createElement('script');
-            script.src = source + "?"+randomId;
-            script.async = false;
-            document.head.appendChild(script);
-        });
-        
-    </script>
-
-    <script>$("#logo").fadeIn(200);</script>
-    
 </body>
