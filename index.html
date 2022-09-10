@@ -61,57 +61,74 @@
     </div>
    
     <script src="scripts/libs/jquery.js"></script>
-    <script>$("#logo").fadeIn(200);</script>
-
+   
     <script src="scripts/libs/vue.js"></script>
     <script src="scripts/libs/vue-router.js"></script>
     <script src="scripts/libs/moment.min.js"></script>
     <script src="scripts/libs/thenBy.min.js"></script>
 
-    <script src="scripts/api.js"></script>
-    <script src="scripts/util.js"></script>
+    <script>
+        const includes = [
+            "scripts/api.js",
+            "scripts/util.js",
+            
+            "scripts/db/model/_base.js",
+            "scripts/db/model/article.js",
+            "scripts/db/model/courseHistory.js",
+            "scripts/db/model/creditHistory.js",
+            "scripts/db/model/person.js",
+            "scripts/db/model/sale.js",
+            "scripts/db/model/saleArticle.js",
+            
+            "scripts/mixins/mixins.js",
 
-    <script src="scripts/db/model/_base.js"></script>
-    <script src="scripts/db/model/article.js"></script>
-    <script src="scripts/db/model/courseHistory.js"></script>
-    <script src="scripts/db/model/creditHistory.js"></script>
-    <script src="scripts/db/model/person.js"></script>
-    <script src="scripts/db/model/sale.js"></script>
-    <script src="scripts/db/model/saleArticle.js"></script>
-   
-    <script src="scripts/mixins/mixins.js"></script>
+            "scripts/components/buttons.js",
+            "scripts/components/course-person-card.js",
+            "scripts/components/person-course.js",
+            "scripts/components/person-line.js",
+            "scripts/components/sale-article-line.js",
+            "scripts/components/sale-line.js",
+            "scripts/components/article-line.js",
+            "scripts/components/history-line.js",
+            "scripts/components/page-container.js",
+            "scripts/components/pilltab.js",
+            "scripts/components/modal-article-chooser.js",
+            "scripts/components/modal-day-chooser.js",
+            "scripts/components/modal-input.js",
+            "scripts/components/modal-input-date.js",
+            "scripts/components/modal-input-text.js",
+            "scripts/components/modal-person-chooser.js",
+            "scripts/components/modal-yesno.js",
+            "scripts/components/search.js",
+            "scripts/components/sale-person.js",
+            
+            "scripts/pages/articles.js",
+            "scripts/pages/article.js",
+            "scripts/pages/course.js",
+            "scripts/pages/login.js",
+            "scripts/pages/logout.js",
+            "scripts/pages/pay.js",
+            "scripts/pages/persons.js",
+            "scripts/pages/person.js",
+            "scripts/pages/sales.js",
+            "scripts/pages/sale.js",
+            
+            "scripts/app.js"
+        ];
+        
+        const randomId = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
+        
+        includes.forEach(source => {
+            const script = document.createElement('script');
+            script.src = source + "?"+randomId;
+            script.async = false;
+            document.head.appendChild(script);
+        });
+        
+    </script>
 
-    <script src="scripts/pages/articles.js"></script>
-    <script src="scripts/pages/article.js"></script>
-    <script src="scripts/pages/course.js"></script>
-    <script src="scripts/pages/login.js"></script>
-    <script src="scripts/pages/logout.js"></script>
-    <script src="scripts/pages/pay.js"></script>
-    <script src="scripts/pages/persons.js"></script>
-    <script src="scripts/pages/person.js"></script>
-    <script src="scripts/pages/sales.js"></script>
-    <script src="scripts/pages/sale.js"></script>
-
-    <script src="scripts/components/buttons.js"></script>
-    <script src="scripts/components/course-person-card.js"></script>
-    <script src="scripts/components/person-course.js"></script>
-    <script src="scripts/components/person-line.js"></script>
-    <script src="scripts/components/sale-article-line.js"></script>
-    <script src="scripts/components/sale-line.js"></script>
-    <script src="scripts/components/article-line.js"></script>
-    <script src="scripts/components/history-line.js"></script>
-    <script src="scripts/components/page-container.js"></script>
-    <script src="scripts/components/pilltab.js"></script>
-    <script src="scripts/components/modal-article-chooser.js"></script>
-    <script src="scripts/components/modal-day-chooser.js"></script>
-    <script src="scripts/components/modal-input.js"></script>
-    <script src="scripts/components/modal-input-date.js"></script>
-    <script src="scripts/components/modal-input-text.js"></script>
-    <script src="scripts/components/modal-person-chooser.js"></script>
-    <script src="scripts/components/modal-yesno.js"></script>
-    <script src="scripts/components/search.js"></script>
-    <script src="scripts/components/sale-person.js"></script>
-
+    <script>$("#logo").fadeIn(200);</script>
     
-    <script src="scripts/app.js"></script>
 </body>
