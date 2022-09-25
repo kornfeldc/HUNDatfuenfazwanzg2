@@ -1,10 +1,11 @@
-const VERSION ="2.1.8";
+const VERSION ="2.1.9";
 
 //define routes
 const router = new VueRouter({
     routes:  [
          { path: '/articles', component: ArticlesPage, meta: { title:"Artikel" } },
          { path: '/course', component: CoursePage, meta: { title: "Kurseinheiten" } },
+         { path: '/rob', component: RobPage, meta: { title: "ROB" } },
          { path: '/persons', component: PersonsPage, meta: { title: "Personen" } }  ,
          { path: '/sales', component: SalesPage, meta: { title: "Verkauf" } },
          { path: '/logout', component: LogoutPage, meta: { title: "Logout" } },
@@ -14,7 +15,8 @@ const router = new VueRouter({
          { path: '/sale/:id', component: SalePage, meta: { title: "Verkauf" } },
          { path: '/person/:id', component: PersonPage, meta: { title: "Person" } },
          { path: '/article/:id', component: ArticlePage, meta: { title:"Artikel" } },
-         { path: '/pay/:id', component: PayPage, meta: { title:"Bezahlen" } }
+         { path: '/pay/:id', component: PayPage, meta: { title:"Bezahlen" } },
+         { path: '/robcourse/:id', component: RobCoursePage, meta: { title: "ROB" } },
     ]
 });
 
