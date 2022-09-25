@@ -1,0 +1,188 @@
+:root {
+  --primary-color: #1976d2;
+  --primary_inverse-color: #ffffff;
+  --additional-color: #FFD54F;
+  --additional_inverse-color: #000000;
+  --hover-color: #F0F0F0;
+  --red-color: #eb0120;
+  --warning-color: #f57f17;
+}
+.primary {
+  background-color: var(--primary-color);
+}
+.primary-text {
+  color: var(--primary-color);
+}
+.primary_inverse-text {
+  color: var(--primary_inverse-color);
+}
+.additional {
+  background-color: var(--additional-color);
+}
+.additional-text {
+  color: var(--additional-color);
+}
+.additional_inverse-text {
+  color: var(--additional_inverse-color);
+}
+.red {
+  background-color: var(--red-color);
+}
+.red-text {
+  color: var(--red-color);
+}
+.warning-text {
+  color: var(--warning-color);
+}
+#app,
+body,
+html {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+.visibility_hidden {
+  visibility: hidden;
+}
+.flx {
+  display: flex;
+}
+.flx.col {
+  flex-direction: column;
+}
+.flx.col.vcenter {
+  justify-content: center;
+}
+.flx.vcenter:not(.col) {
+  align-items: center;
+}
+.g1 {
+  flex-grow: 1;
+}
+.f150 {
+  font-size: 150%;
+}
+.f180 {
+  font-size: 180%;
+}
+.f200 {
+  font-size: 200%;
+}
+.p-0 {
+  padding: 0;
+}
+@media (max-width: 600px) {
+  .p-m0 {
+    padding: 0;
+  }
+}
+.p-std {
+  padding: 1em;
+}
+.pl-std {
+  padding-left: 1em;
+}
+.pr-std {
+  padding-right: 1em;
+}
+.pt-std {
+  padding-top: 1em;
+}
+.pb-std {
+  padding-bottom: 1em;
+}
+.px-std {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+.py-std {
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+.m-std {
+  margin: 1em;
+}
+.ml-std {
+  margin-left: 1em;
+}
+.mr-std {
+  margin-right: 1em;
+}
+.mt-std {
+  margin-top: 1em;
+}
+.mb-std {
+  margin-bottom: 1em;
+}
+.mx-std {
+  margin-left: 1em;
+  margin-right: 1em;
+}
+.my-std {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+.p-15 {
+  padding: 1.5em;
+}
+.hover {
+  cursor: pointer;
+}
+.hover:hover {
+  background-color: var(--hover-color);
+}
+.above_actions {
+  padding-bottom: 5rem;
+}
+.actions {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  background-color: #fafafa;
+  box-shadow: 0px 1px 6px 0 #a58f8f;
+  width: 100%;
+  display: flex;
+  height: 5rem;
+  padding: 1.5em;
+}
+.scroller {
+  overflow: auto;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+/*materialcss override*/
+/*.col {
+    padding-left:0 !important;
+}*/
+/*bulma override*/
+body.has-navbar-fixed-top,
+html.has-navbar-fixed-top {
+  padding-top: 6.25rem;
+}
+.nli .navbar-item.link,
+.nli .navbar-burger {
+  display: none;
+}
+.progress.fixed {
+  position: absolute;
+  bottom: 5rem;
+  width: 50%;
+  left: 25%;
+}
+.customtag {
+  margin-right: 0.5em;
+  margin-bottom: 0.5em;
+  cursor: pointer;
+}
+.customtag.is-link a {
+  color: white;
+}
+.customtag i {
+  color: var(--primary-color);
+}
+.customtag.is-link i {
+  color: white;
+}

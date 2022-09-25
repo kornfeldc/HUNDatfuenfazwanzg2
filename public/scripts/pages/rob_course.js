@@ -91,7 +91,7 @@ const RobCoursePage = {
     },
     computed: {
         link() {
-            return "https://rob.og125.at/i.html?"+this.robCourse.link;
+            return "https://rob.og125.at/"+this.robCourse.link;
         }
     },
     async mounted() {

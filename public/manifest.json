@@ -1,0 +1,13 @@
+{
+    "name": "OG125",
+    "short_name": "Og125",
+    "icons": [{
+      "src": "images/icons/192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      }],
+    "start_url": "/index.html",
+    "display": "standalone",
+    "background_color": "#1976d2",
+    "theme_color": "#1976d2"
+  }
