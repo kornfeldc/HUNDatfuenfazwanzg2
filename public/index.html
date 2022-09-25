@@ -19,5 +19,74 @@
 
 </head>
 <body>
-    <div></div>
+    <div id="app" style="display:none">
+        <nav class="navbar is-fixed-top has-shadow" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item" style="padding-right:0">
+                    <img src="../images/logo.svg" style="max-height:4.5rem">
+                </a>
+                <a class="navbar-item" style="flex-direction: column; align-items: flex-start">
+                    <h3 class="title primary-text is-4" style="padding-top:10px">Ralley Obedience Kurs</h3>
+                    <h5 class="subtitle primary-text is-5" v-if="date">{{moment(date).format("DD.MM.YYYY")}}</h5>
+                </a>
+            </div>
+        </nav>
+        <template v-if="!success && courseIsFull === false">
+            <div class="above_actions p-std">
+                <div class="field">
+                    <label class="label">Name</label>
+                    <input class="input" type="text" placeholder="Name" v-model="personName"/>
+                </div>
+                <div class="field">
+                    <label class="label">Name des Hundes</label>
+                    <input class="input" type="text" placeholder="Name des Hundes" v-model="dogName"/>
+                </div>
+                <div>&nbsp;</div>
+                <article class="message is-warning">
+                    <div class="message-header">
+                        <p>Abmeldungen</p>
+                    </div>
+                    <div class="message-body">
+                        Achtung, es wird automatisch eine Einheit vom Guthaben abgezogen.
+                        Abmeldungen sind nur bis <strong>24 Stunden vor Kursbeginn</strong> möglich.
+                    </div>
+                </article>
+            </div>
+            <div class="actions" v-if="personName && dogName">
+                <div class="field is-grouped">
+                    <div class="control">
+                        <button-primary @click="save();">Anmelden</button-primary>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template v-if="!success && courseIsFull === true">
+            <div class="container is-fluid p-std">
+                <article class="message is-danger">
+                    <div class="message-body">
+                        Dieser Kurstag ist leider schon ausgebucht
+                    </div>
+                </article>
+            </div>
+        </template>
+        <template v-if="success">
+            <div class="container is-fluid p-std">
+                <article class="message is-success">
+                    <div class="message-body">
+                        Anmeldung erfolgreich
+                    </div>
+                </article>
+            </div>
+        </template>
+    </div>
+    <div id="logo" style="margin:0 auto;width:100%;height:100%;text-align:center">
+        <img src="../images/logo.svg" style="height:50%">
+    </div>
+
+    <script src="../scripts/libs/jquery.js"></script>
+    <script src="../scripts/libs/vue.js"></script>
+    <script src="../scripts/libs/vue.js"></script>
+    <script src="../scripts/libs/moment.min.js"></script>
+    <script src="../scripts/components/buttons.js"></script>
+    <script src="app.js"></script>
 </body>

@@ -38,11 +38,30 @@ const RobCoursePage = {
                 </div>
             </div>
 
+            <div v-if="persons.length > 0">
+                <div>&nbsp;</div>
+                <label class="label" style="padding-bottom:0.8em">Angemeldet</label>
+                <div class="card" v-for="person in persons">
+                    <div class="columns is-mobile" style="padding:0 0.8em">
+                        <div class="column" style="">
+                            {{person.personName}} mit <strong>{{person.dogName}}</strong>
+                            <div class="is-size-7 has-text-grey">{{moment(person.timestamp).format("DD.MM.YYYY HH:mm")}}</div>
+                        </div>
+                        <div class="column is-narrow">
+                            <button-danger-inverted @click="vibrate();removePerson(person);">
+                                <span class="icon is-small">
+                                    <i class="fas fa-trash"></i>
+                                </span>
+                            </button-danger-inverted>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </div>
         <div class="actions">
             <div class="field is-grouped">
-                <div class="control">
+                <div class="control" v-if="robCourse.id === '_' || robCourse.personCount === 0">
                     <button-primary @click="vibrate();save();">Speichern</button-primary>
                 </div>
                 <div class="control" v-if="robCourse.id > 0">
@@ -59,18 +78,20 @@ const RobCoursePage = {
             </div>
         </div>
         <modal-yesno ref="yesNoRemove" title="ROB Einheit löschen" text="Soll diese ROB Einheit wirklich gelöscht werden?"/>
+        <modal-yesno ref="yesNoRemovePerson" title="Person entfernen" text="Soll diese Person wirklich entfernt werden?"/>
         <modal-alert ref="alertCopied" title="" text="Link wurde kopiert"/>
         <modal-alert ref="alertCantCopy" title="" text="Dein Gerät unterstützt diese Aktion leider nicht, bitte händisch kopieren"/>
     </page-container>
     `,
     data() {
         return {
-            robCourse: {}
+            robCourse: {},
+            persons: []
         };
     },
     computed: {
         link() {
-            return "https://rob.og125.at/public/"+this.robCourse.link;
+            return "https://rob.og125.at/"+this.robCourse.link;
         }
     },
     async mounted() {
@@ -80,8 +101,12 @@ const RobCoursePage = {
     methods: {
         async load() {
             var app = this;
-            if(app.$route.params.id !== "_")
+            if(app.$route.params.id !== "_") {
                 RobCourse.get(app.$route.params.id).then(robCourse => { app.robCourse = robCourse; }, () => router.push({ path: "/rob" }));
+                RobCoursePerson.getList(app.$route.params.id).then(robCoursePersons => {
+                    app.persons = robCoursePersons;    
+                });
+            }
             else  {
                 app.robCourse = new RobCourse();
                 await app.robCourse.generateLink();
@@ -126,6 +151,12 @@ const RobCoursePage = {
                 router.replace({ path: '/robcourse/'+ response.id });
                 location.reload();
             });
+        },
+        async removePerson(person) {
+            const app = this;
+            await app.$refs.yesNoRemovePerson.open();
+            await person.remove();
+            location.reload();
         },
         back() {
             var app = this;

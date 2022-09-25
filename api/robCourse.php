@@ -15,11 +15,11 @@ switch($method) {
         $id = @$_GET['id'];
 
         if(isset($id)) {
-            $stmt = $conn->prepare("SELECT rc.*, (select count(*) from rob_course_person rcp where rcp.rob_course_id = rc.id) personCount FROM rob_course rc WHERE og=? and id=?");
+            $stmt = $conn->prepare("SELECT rc.*, (select count(*) from rob_course_person rcp where rcp.robCourseId = rc.id) personCount FROM rob_course rc WHERE og=? and id=?");
             $stmt->bind_param("si", $og, $id);
         }
         else {
-            $stmt = $conn->prepare("SELECT rc.*, (select count(*) from rob_course_person rcp where rcp.rob_course_id = rc.id) personCount  FROM rob_course rc WHERE og=? ORDER BY rc.date DESC");
+            $stmt = $conn->prepare("SELECT rc.*, (select count(*) from rob_course_person rcp where rcp.robCourseId = rc.id) personCount  FROM rob_course rc WHERE og=? ORDER BY rc.date DESC");
             $stmt->bind_param("s", $og);
         }
         echoQueryAsJson($id, $stmt);
