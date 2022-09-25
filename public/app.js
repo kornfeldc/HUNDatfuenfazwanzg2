@@ -6,6 +6,7 @@ new Vue({
             link: null,
             date: undefined,
             courseIsFull: undefined,
+            dateIsInvalid: undefined,
             personName: "",
             dogName: "",
             success: undefined
@@ -60,6 +61,7 @@ new Vue({
 
             this.courseIsFull = data.personCount >= data.maxPersons; 
             this.date = data.date;
+            this.dateIsInvalid = moment(this.date).isSameOrBefore(moment(),"day");
         },
         invalid() {
             window.location.href = "https://svoe.og125.at";

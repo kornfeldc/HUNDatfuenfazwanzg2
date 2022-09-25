@@ -31,7 +31,7 @@
                 </a>
             </div>
         </nav>
-        <template v-if="!success && courseIsFull === false">
+        <template v-if="!dateIsInvalid && !success && courseIsFull === false">
             <div class="above_actions p-std">
                 <div class="field">
                     <label class="label">Name</label>
@@ -60,7 +60,7 @@
                 </div>
             </div>
         </template>
-        <template v-if="!success && courseIsFull === true">
+        <template v-if="!dateIsInvalid && !success && courseIsFull === true">
             <div class="container is-fluid p-std">
                 <article class="message is-danger">
                     <div class="message-body">
@@ -69,7 +69,16 @@
                 </article>
             </div>
         </template>
-        <template v-if="success">
+        <template v-if="dateIsInvalid">
+            <div class="container is-fluid p-std">
+                <article class="message is-danger">
+                    <div class="message-body">
+                        Für diesen Kurstag sind keine Anmeldungen mehr möglich
+                    </div>
+                </article>
+            </div>
+        </template>
+        <template v-if="!dateIsInvalid && success">
             <div class="container is-fluid p-std">
                 <article class="message is-success">
                     <div class="message-body">
