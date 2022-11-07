@@ -4,7 +4,7 @@ Vue.component('sale-person', {
     <div class="box" @click="$emit('click')">
         <div class="media">
             <div class="media-content">
-                <p class="title is-5">{{person.nameWithGroup}}</p>
+                <p class="title is-5">{{person.nameWithGroup}} <span class="has-text-grey has-text-weight-light is-size-6" v-if="sale.dogNames">({{person.dogNames}})</span></p>
             </div>
             <div class="media-right">
                 {{sale.saleDayShort}}

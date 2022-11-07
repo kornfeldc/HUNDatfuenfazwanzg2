@@ -15,6 +15,7 @@ class Sale extends BaseModel {
         this.addAdditionalCredit = 0;
         this.usedCredit = false;
         this.personCredit = null;
+        this.dogNames = null;
         this.extId = "";
         this.articles = [];
 

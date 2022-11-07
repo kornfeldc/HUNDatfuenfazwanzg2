@@ -19,7 +19,8 @@ switch($method) {
             $stmt = $conn->prepare("
                 SELECT 
                     s.*,
-                    CASE WHEN mp.id IS NOT NULL THEN mp.credit ELSE p.credit END personCredit
+                    CASE WHEN mp.id IS NOT NULL THEN mp.credit ELSE p.credit END personCredit,
+                    p.dogNames
                 FROM sale s 
                 LEFT OUTER JOIN person p ON s.personId = p.id
                 LEFT OUTER JOIN person mp ON p.mainPersonId = mp.id
@@ -30,7 +31,8 @@ switch($method) {
             $stmt = $conn->prepare("
                 SELECT 
                     s.*,
-                    CASE WHEN mp.id IS NOT NULL THEN mp.credit ELSE p.credit END personCredit
+                    CASE WHEN mp.id IS NOT NULL THEN mp.credit ELSE p.credit END personCredit,
+                    p.dogNames
                 FROM sale s
                 LEFT OUTER JOIN person p ON s.personId = p.id
                 LEFT OUTER JOIN person mp ON p.mainPersonId = mp.id
@@ -43,7 +45,8 @@ switch($method) {
             $sql = "
                 SELECT 
                     s.*,
-                    CASE WHEN mp.id IS NOT NULL THEN mp.credit ELSE p.credit END personCredit
+                    CASE WHEN mp.id IS NOT NULL THEN mp.credit ELSE p.credit END personCredit,
+                    p.dogNames
                 FROM sale s
                 LEFT OUTER JOIN person p ON s.personId = p.id
                 LEFT OUTER JOIN person mp ON p.mainPersonId = mp.id

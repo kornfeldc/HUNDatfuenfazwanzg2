@@ -5,7 +5,9 @@ Vue.component('person-course', {
         <div class="box">
             <div class="media">
                 <div class="media-content">
-                    <p class="title is-5">{{person.nameWithGroup}}</p>
+                    <div class="title is-5">
+                        {{person.nameWithGroup}} <span class="has-text-grey has-text-weight-light is-size-6" v-if="person.dogNames">({{person.dogNames}})</span>
+                    </div>
                 </div>
                 <div class="media-right">
                     {{person.courseCount}} Einheit(en) frei

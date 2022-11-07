@@ -37,6 +37,7 @@ switch($method) {
             array_push($p,getParameter("og", "s", $og));
             array_push($p,getParameter("firstName", "s", @$_POST['firstName']));
             array_push($p,getParameter("lastName", "s", @$_POST['lastName']));
+            array_push($p,getParameter("dogNames", "s", @$_POST['dogNames']));
             array_push($p,getParameter("isMember", "i", boolFromPost("isMember")));
             array_push($p,getParameter("isActive", "i", boolFromPost("isActive")));
             array_push($p,getParameter("mainPersonId", "i", valueFromPost("mainPersonId", null)));

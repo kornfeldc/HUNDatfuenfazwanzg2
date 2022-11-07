@@ -20,8 +20,9 @@ class Person extends BaseModel {
         this.lastBookedCourse = null; // do not map
         this.extId = "";
         this.isActive = true;
+        this.dogNames = "";
 
-        this.map = ["id","firstName", "lastName", "isMember", "mainPersonId", "personGroup", "credit", "courseCount", "phone", "email", "extId", "isActive"];
+        this.map = ["id","firstName", "lastName", "isMember", "mainPersonId", "personGroup", "credit", "courseCount", "phone", "email", "extId", "isActive", "dogNames"];
     }
 
     get fullName() {
@@ -43,7 +44,8 @@ class Person extends BaseModel {
             util.search(this.firstName, str) || 
             util.search(this.lastName, str) || 
             util.search(this.personGroup, str) || 
-            util.search(this.relatedNames, str)
+            util.search(this.relatedNames, str) ||
+            util.search(this.dogNames, str)
         );
     }
 

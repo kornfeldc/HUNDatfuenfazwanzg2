@@ -25,6 +25,13 @@ const PersonPage = {
                         <input class="input" type="text" placeholder="Nachname" v-model="person.lastName"/>
                     </div>
                 </div>
+                <div v-if="person.isMainPerson">&nbsp;</div>
+                <div v-if="person.isMainPerson" class="field">
+                    <label class="label">Hunde Namen</label>
+                    <div class="control">
+                        <input class="input" type="text" placeholder="Hunde Namen" v-model="person.dogNames"/>
+                    </div>
+                </div>
                 <div>&nbsp;</div>
                 <div class="field">
                     <label class="label">Telefon</label>

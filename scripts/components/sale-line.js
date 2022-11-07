@@ -4,7 +4,7 @@ Vue.component('sale-line', {
     <div class="box hover">
         <div class="columns is-mobile" @click="$emit('click');">
             <div class="column ">
-                <div class="title is-5">{{sale.personName}}</div>
+                <div class="title is-5">{{sale.personName}} <span class="has-text-grey has-text-weight-light is-size-6" v-if="sale.dogNames">({{sale.dogNames}})</span></div>
                 <div class="subtitle is-6">
                     <div v-if="!sale.isToday">{{sale.saleDateDay}}</div>
                     <span>{{articlesText}}</span>
