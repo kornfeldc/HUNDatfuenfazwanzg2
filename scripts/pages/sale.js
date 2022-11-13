@@ -27,16 +27,7 @@ const SalePage = {
 
         </div>
         <div class="actions" v-if="sale.personId">
-            <div class="field is-grouped">
-                <div class="control">
-                    <button-primary @click="vibrate();save();">OK</button-primary>
-                </div>
-                <div class="control" v-if="sale.articleSum != 0 && !sale.isPayed">
-                    <button-success @click="vibrate();pay();">Zahlen</button-success>
-                </div>
-                <div class="control" v-if="sale.canPayWithCredit">
-                    <button-success-inverted @click="vibrate();payAllWithCredit();">mit GH&nbsp;(<i class="fas fa-badge-check"/>)&nbsp;zahlen</button-success-inverted>
-                </div>
+            <div class="field is-grouped" style="width:100%">
                 <div class="control">
                     <button-cancel @click="vibrate();cancel();"/>
                 </div>
@@ -46,6 +37,17 @@ const SalePage = {
                         <i class="fas fa-trash"></i>
                         </span>
                     </button-danger-inverted>
+                </div>
+                
+                <div class="control" style="flex-grow: 1">&nbsp;</div>
+                <div class="control" v-if="sale.canPayWithCredit">
+                    <button-success-inverted @click="vibrate();payAllWithCredit();">mit GH&nbsp;(<i class="fas fa-badge-check"/>)&nbsp;zahlen</button-success-inverted>
+                </div>
+                <div class="control" v-if="sale.articleSum != 0 && !sale.isPayed">
+                    <button-success @click="vibrate();pay();">Zahlen</button-success>
+                </div>
+                <div class="control">
+                    <button-primary @click="vibrate();save();">OK</button-primary>
                 </div>
             </div>
         </div>

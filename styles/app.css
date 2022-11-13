@@ -145,6 +145,13 @@ html {
   display: flex;
   height: 5rem;
   padding: 1.5em;
+  justify-content: flex-end;
+}
+.ios .actions {
+  padding-bottom: 4.5em !important;
+}
+.button {
+  font-size:110%
 }
 .scroller {
   overflow: auto;

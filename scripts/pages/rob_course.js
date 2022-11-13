@@ -60,9 +60,9 @@ const RobCoursePage = {
 
         </div>
         <div class="actions">
-            <div class="field is-grouped">
-                <div class="control" v-if="robCourse.id === '_' || robCourse.personCount === 0">
-                    <button-primary @click="vibrate();save();">Speichern</button-primary>
+            <div class="field is-grouped" style="width:100%">
+                <div class="control">
+                    <button-cancel @click="vibrate();cancel();"/>
                 </div>
                 <div class="control" v-if="robCourse.id > 0">
                     <button-danger-inverted @click="vibrate();remove();">
@@ -71,9 +71,9 @@ const RobCoursePage = {
                         </span>
                     </button-danger-inverted>
                 </div>
-                
-                <div class="control">
-                    <button-cancel @click="vibrate();cancel();"/>
+                <div class="control" style="flex-grow: 1">&nbsp;</div>
+                <div class="control" v-if="robCourse.id === '_' || robCourse.personCount === 0">
+                    <button-primary @click="vibrate();save();">Speichern</button-primary>
                 </div>
             </div>
         </div>

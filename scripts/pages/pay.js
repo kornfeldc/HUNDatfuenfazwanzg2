@@ -51,15 +51,16 @@ const PayPage = {
             </div>
         </div>
         <div class="actions">
-            <div class="field is-grouped">
-                <div class="control" v-if="allowPay">
-                    <button-success @click="vibrate();save();">Fertig</button-success>
+            <div class="field is-grouped" style="width:100%">               
+                <div class="control">
+                    <button-cancel @click="vibrate();cancel();"/>
                 </div>
+                <div class="control" style="flex-grow: 1">&nbsp;</div>
                 <div class="control">
                     <button-primary-inverted v-if="toReturn > 0" @click="vibrate();retourAsCredit();">Retour als Guthaben</button-primary-inverted>
                 </div>
-                <div class="control">
-                    <button-cancel @click="vibrate();cancel();"/>
+                <div class="control" v-if="allowPay">
+                    <button-success @click="vibrate();save();">Fertig</button-success>
                 </div>
             </div>
         </div>

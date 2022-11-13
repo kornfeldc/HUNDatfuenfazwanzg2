@@ -42,12 +42,13 @@ const SalesPage = {
             </div>
         </div>
         <div class="actions" v-show="isToday && sales.length > 0">
-            <div class="field is-grouped">
-                <div class="control">
-                    <button-primary @click="vibrate();open();">Neuer Verkauf</button-primary>
-                </div>
+            <div class="field is-grouped" style="width:100%">
+                <div class="control" style="flex-grow: 1">&nbsp;</div>
                 <div class="control" v-if="existingOpenedSalesCanBePayedWithCredit">
                     <button-success-inverted @click="vibrate();payAllWithCredit();">Alle mit GH&nbsp;(<i class="fas fa-badge-check"/>)&nbsp;abrechnen</button-success-inverted>
+                </div>
+                <div class="control">
+                    <button-primary @click="vibrate();open();">Neuer Verkauf</button-primary>
                 </div>
             </div>
         </div>

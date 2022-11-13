@@ -107,13 +107,7 @@ const PersonPage = {
             </div>
         </div>
         <div class="actions">
-            <div class="field is-grouped">
-                <div class="control">
-                    <button-primary @click="vibrate();save();">Speichern</button-primary>
-                </div>
-                <div class="control" v-if="person.isMainPerson">
-                    <button-primary-inverted @click="vibrate();addCredit();">Guthaben +/-</button-primary-inverted>
-                </div>
+            <div class="field is-grouped" style="width:100%">
                 <div class="control">
                     <button-cancel @click="vibrate();cancel();"/>
                 </div>
@@ -123,6 +117,13 @@ const PersonPage = {
                             <i class="fas fa-trash"></i>
                         </span>
                     </button-danger-inverted>
+                </div>
+                <div class="control" style="flex-grow: 1">&nbsp;</div>
+                <div class="control" v-if="person.isMainPerson">
+                    <button-primary-inverted @click="vibrate();addCredit();">Guthaben +/-</button-primary-inverted>
+                </div>
+                <div class="control">
+                    <button-primary @click="vibrate();save();">Speichern</button-primary>
                 </div>
             </div>
         </div>

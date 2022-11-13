@@ -1,4 +1,4 @@
-const VERSION ="2.2.0";
+const VERSION ="2.2.1";
 
 //define routes
 const router = new VueRouter({
@@ -46,7 +46,10 @@ new Vue({
         app.initializeNavigation();
 
         $("#logo").fadeOut(500);
-        setTimeout(()=>$("#app").fadeIn(800),300);        
+        setTimeout(()=>$("#app").fadeIn(800),300);     
+        
+        if(this.iOS())
+            $("body").addClass("ios");
     },
     updated() {
         var app = this;
@@ -61,5 +64,17 @@ new Vue({
         reload() {
             window.location.reload();
         },
+        iOS: () => {
+            return [
+                    'iPad Simulator',
+                    'iPhone Simulator',
+                    'iPod Simulator',
+                    'iPad',
+                    'iPhone',
+                    'iPod'
+                ].includes(navigator.platform)
+                // iPad on iOS 13 detection
+                || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+        }
     }
 });
