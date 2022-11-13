@@ -146,6 +146,7 @@ html {
   height: 5rem;
   padding: 1.5em;
   justify-content: flex-end;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 .ios .actions {
   padding-bottom: 4.5em !important;
