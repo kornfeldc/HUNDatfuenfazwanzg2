@@ -22,7 +22,7 @@ const ArticlesPage = {
             <article-line v-for="entry in articles" :article="entry" v-on:click="vibrate();open(entry);" :key="entry.id"/>
         </div>
         <div class="actions">
-            <div class="field" style="width:100%">
+            <div class="field is-grouped" style="width:100%">
                 <div class="control" style="flex-grow: 1">&nbsp;</div>
                 <div class="control">
                     <button-primary @click="vibrate();open();">Neuer Artikel</button-primary>

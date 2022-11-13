@@ -12,8 +12,9 @@ Vue.component('modal-yesno', {
                 {{text}}
             </section>
             <footer class="modal-card-foot">
-                <button-primary @click="vibrate();yes();">Ja</button-primary>
+                <div class="control" style="flex-grow: 1">&nbsp;</div>
                 <button-text @click="vibrate();no();">Nein</button-text>
+                <button-primary @click="vibrate();yes();">Ja</button-primary>
             </footer>
         </div>
     </div>

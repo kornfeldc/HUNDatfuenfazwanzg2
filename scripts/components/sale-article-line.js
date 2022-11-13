@@ -8,13 +8,13 @@ Vue.component('sale-article-line', {
         <div class="column is-narrow p-m0" v-if="!sale.isPayed">
             <button class="button is-rounded is-danger" @click.stop="vibrate();modify(-1);">-</button>
         </div>
-        <div class="column is-narrow p-m0" style="width:45px;text-align:center">
+        <div :class="'column is-narrow p-m0 '+(amount === 0 ? 'has-text-grey-light' : '')" style="width:45px;text-align:center">
             {{amount}}x
         </div>
         <div class="column is-narrow p-m0" v-if="!sale.isPayed">
             <button class="button is-rounded is-success" @click.stop="vibrate();modify(1);">+</button>
         </div>
-        <div class="column is-narrow" style="width:60px;text-align:right">
+        <div :class="'column is-narrow '+(amount === 0 ? 'has-text-grey-light' : '')" style="width:60px;text-align:right">
             <template v-if="mode!=='sale'">
                 {{format(article.price)}}
             </template>

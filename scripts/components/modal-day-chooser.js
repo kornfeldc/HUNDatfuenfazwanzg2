@@ -26,8 +26,9 @@ Vue.component('modal-day-chooser', {
                 <!--<a v-if="$root.syncInfo.allSales==='syncing'" class="button is-loading is-large is-fullwidth is-link is-outlined" style="border:0">Loading</a>-->
             </section>
             <footer class="modal-card-foot">
-                <button-primary @click="vibrate();today();">Heute</button-primary>
                 <button-cancel @click="vibrate();cancel();"/>
+                <div class="control" style="flex-grow: 1">&nbsp;</div>
+                <button-primary @click="vibrate();today();">Heute</button-primary>
             </footer>
         </div>
     </div>

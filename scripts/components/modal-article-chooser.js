@@ -17,24 +17,13 @@ Vue.component('modal-article-chooser', {
                     <pilltab v-model="tab" v-for="at in articleTypes" :id="at.id" :title="at.shortTitle" :icon="at.icon"/>
                 </div>
                 <sale-article-line v-for="article in articles" :article="article" :sale="sale" :key="article.id" @modify="(article,amount)=>modify(article,amount)"/>
-
-                <!--
-                <div v-if="search" class="columns is-mobile is-vcentered hover" @click="vibrate();createArticle();">
-                    <div class="column">
-                        <i style='min-width:30px;text-align:center' :class="'fa fa-plus f180 has-text-link' "  />
-                    </div>
-                    <div class="column is-full">
-                        <h4 class="title is-5">"{{search}}" neu anlegen</h4>
-                    </div>
-                </div>
-                -->
-
             </section>
             <footer class="modal-card-foot">
-                <button-primary @click="vibrate();ok();">OK</button-primary>
-                <button-primary-inverted @click="vibrate();addCredit();" v-if="!person.isBar && firstOnNewSale">Nur Guthaben kaufen</button-primary-inverted>
-                <button-success-inverted @click="vibrate();pay();" v-if="modifications && modifications.length>0">Zahlen</button-success-inverted>
                 <button-cancel @click="vibrate();cancel();"/>
+                <div class="control" style="flex-grow: 1">&nbsp;</div>
+                <button-success-inverted @click="vibrate();pay();" v-if="modifications && modifications.length>0">Zahlen</button-success-inverted>
+                <button-primary-inverted @click="vibrate();addCredit();" v-if="!person.isBar && firstOnNewSale">Nur Guthaben kaufen</button-primary-inverted>
+                <button-primary @click="vibrate();ok();">OK</button-primary>
             </footer>
         </div>
     </div>

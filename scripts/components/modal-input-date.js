@@ -12,8 +12,9 @@ Vue.component('modal-input-date', {
                 <input class="input" type="date" ref="inp" v-model:value="value" @keyup.enter="save"/>
             </section>
             <footer class="modal-card-foot">
-                <button-primary @click="vibrate();save();">OK</button-primary>
                 <button-cancel @click="vibrate();cancel();"/>
+                <div class="control" style="flex-grow: 1">&nbsp;</div>
+                <button-primary @click="vibrate();save();">OK</button-primary>
             </footer>
         </div>
     </div>

@@ -12,6 +12,7 @@ Vue.component('modal-alert', {
                 {{text}}
             </section>
             <footer class="modal-card-foot">
+                <div class="control" style="flex-grow: 1">&nbsp;</div>
                 <button-primary @click="vibrate();ok();">OK</button-primary>
             </footer>
         </div>

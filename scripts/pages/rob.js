@@ -20,7 +20,7 @@ const RobPage = {
             </template>
         </div>
         <div class="actions">
-            <div class="field" style="width:100%">
+            <div class="field is-grouped" style="width:100%">
                 <div class="control" style="flex-grow: 1">&nbsp;</div>
                 <div class="control">
                     <button-primary @click="vibrate();open();">Neue Kurseinheit</button-primary>
