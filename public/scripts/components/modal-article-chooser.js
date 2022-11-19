@@ -32,8 +32,12 @@ Vue.component('modal-article-chooser', {
             </section>
             <footer class="modal-card-foot">
                 <button-primary @click="vibrate();ok();">OK</button-primary>
-                <button-primary-inverted @click="vibrate();addCredit();" v-if="!person.isBar && firstOnNewSale">Nur Guthaben kaufen</button-primary-inverted>
-                <button-success-inverted @click="vibrate();pay();" v-if="modifications && modifications.length>0">Zahlen</button-success-inverted>
+                <button-primary-inverted @click="vibrate();addCredit();" v-if="!person.isBar && firstOnNewSale">GH kaufen</button-primary-inverted>
+                <button-success-inverted @click="vibrate();pay();" v-if="modifications && modifications.length>0">
+                    <span class="icon is-small">
+                        <i class="fas fa-euro-sign"></i>
+                    </span> 
+                </button-success-inverted>
                 <button-cancel @click="vibrate();cancel();"/>
             </footer>
         </div>

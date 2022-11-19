@@ -41,10 +41,14 @@ const SalePage = {
                 
                 <div class="control" style="flex-grow: 1">&nbsp;</div>
                 <div class="control" v-if="sale.canPayWithCredit">
-                    <button-success-inverted @click="vibrate();payAllWithCredit();">mit GH&nbsp;(<i class="fas fa-badge-check"/>)&nbsp;zahlen</button-success-inverted>
+                    <button-success-inverted @click="vibrate();payAllWithCredit();">mit GH&nbsp;<i class="fas fa-badge-check"/></button-success-inverted>
                 </div>
                 <div class="control" v-if="sale.articleSum != 0 && !sale.isPayed">
-                    <button-success @click="vibrate();pay();">Zahlen</button-success>
+                    <button-success-inverted @click="vibrate();pay();">
+                        <span class="icon is-small">
+                            <i class="fas fa-euro-sign"></i>
+                        </span>
+                    </button-success-inverted>
                 </div>
                 <div class="control">
                     <button-save @click="vibrate();save();"/>

@@ -47,7 +47,7 @@ const SalesPage = {
                     <button-primary @click="vibrate();open();">Neuer Verkauf</button-primary>
                 </div>
                 <div class="control" v-if="existingOpenedSalesCanBePayedWithCredit">
-                    <button-success-inverted @click="vibrate();payAllWithCredit();">Alle mit GH&nbsp;(<i class="fas fa-badge-check"/>)&nbsp;abrechnen</button-success-inverted>
+                    <button-success-inverted @click="vibrate();payAllWithCredit();">Alle &nbsp;<i class="fas fa-badge-check"/>&nbsp;abrechnen</button-success-inverted>
                 </div>
             </div>
         </div>
