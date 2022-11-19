@@ -77,6 +77,11 @@ html {
     padding: 0;
   }
 }
+@media (min-width: 980px) {
+  .hide_over_980 {
+    display:none;
+  }
+}
 .p-std {
   padding: 1em;
 }

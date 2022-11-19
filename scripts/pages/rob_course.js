@@ -73,7 +73,7 @@ const RobCoursePage = {
                 </div>
                 <div class="control" style="flex-grow: 1">&nbsp;</div>
                 <div class="control" v-if="robCourse.id === '_' || robCourse.personCount === 0">
-                    <button-primary @click="vibrate();save();">Speichern</button-primary>
+                    <button-save @click="vibrate();save();"/>
                 </div>
             </div>
         </div>

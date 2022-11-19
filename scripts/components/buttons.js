@@ -26,6 +26,20 @@ Vue.component('button-text', {
     template: `<button class="button is-outlined" @click="$emit('click')"><slot></slot></button>`,
 });
 
+Vue.component('button-save', {
+    template: `
+        <button-primary @click="$emit('click')">
+            <span class="icon is-small">
+                <i class="fas fa-check"></i>
+            </span>
+        </button-primary>`,
+});
+
 Vue.component('button-cancel', { 
-    template: `<button-text @click="$emit('click')">Abbrechen</button-text>`,
+    template: `
+        <button-text @click="$emit('click')">
+            <span class="icon is-small">
+                <i class="fas fa-arrow-left"></i>
+            </span>
+        </button-text>`,
 });

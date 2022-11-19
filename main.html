@@ -49,12 +49,30 @@
                         <router-link class="navbar-item link" to="/articles" v-show="isLoggedIn">Artikel</router-link>
                         <router-link class="navbar-item link" to="/logout" v-show="isLoggedIn">Ausloggen</router-link>
                         <span style="padding:1em;color:#808080;font-size:80%">Version {{version}}</span>
-
                     </template>
                 </div>
 
             </div>
         </nav>
+        <div class="tabs hide_over_980" v-if="isLoggedIn">
+            <ul>
+                <li :class="(false? 'is-active':'')">
+                    <router-link  to="/sales">Verkauf</router-link>
+                </li>
+                <li :class="(false? 'is-active':'')">
+                    <router-link to="/course">Kurs</router-link>
+                </li>
+                <li :class="(false? 'is-active':'')">
+                    <router-link to="/rob">ROB</router-link>
+                </li>
+                <li :class="(false? 'is-active':'')">
+                    <router-link to="/persons">Personen</router-link>
+                </li>
+                <li :class="(false? 'is-active':'')">
+                    <router-link to="/articles">Artikel</router-link>
+                </li>
+            </ul>
+        </div>
         <router-view></router-view>
     </div>
     <div id="logo" style="display:none;margin:0 auto;width:100%;height:100%;text-align:center">

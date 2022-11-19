@@ -123,7 +123,7 @@ const PersonPage = {
                     <button-primary-inverted @click="vibrate();addCredit();">Guthaben +/-</button-primary-inverted>
                 </div>
                 <div class="control">
-                    <button-primary @click="vibrate();save();">Speichern</button-primary>
+                    <button-save @click="vibrate();save();"/>
                 </div>
             </div>
         </div>

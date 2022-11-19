@@ -47,7 +47,7 @@ const SalePage = {
                     <button-success @click="vibrate();pay();">Zahlen</button-success>
                 </div>
                 <div class="control">
-                    <button-primary @click="vibrate();save();">OK</button-primary>
+                    <button-save @click="vibrate();save();"/>
                 </div>
             </div>
         </div>

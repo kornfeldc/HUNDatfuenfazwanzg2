@@ -54,7 +54,7 @@ const ArticlePage = {
                 </div>
                 <div class="control" style="flex-grow: 1">&nbsp;</div>
                 <div class="control">
-                    <button-primary @click="vibrate();save();">Speichern</button-primary>
+                    <button-save @click="vibrate();save();"/>
                 </div>
             </div>
         </div>

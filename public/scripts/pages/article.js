@@ -50,7 +50,7 @@ const ArticlePage = {
         <div class="actions">
             <div class="field is-grouped">
                 <div class="control">
-                    <button-primary @click="vibrate();save();">Speichern</button-primary>
+                    <button-save @click="vibrate();save();"/>
                 </div>
                 <div class="control">
                     <button-cancel @click="vibrate();cancel();"/>

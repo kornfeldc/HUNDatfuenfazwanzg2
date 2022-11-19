@@ -62,7 +62,7 @@ const RobCoursePage = {
         <div class="actions">
             <div class="field is-grouped">
                 <div class="control" v-if="robCourse.id === '_' || robCourse.personCount === 0">
-                    <button-primary @click="vibrate();save();">Speichern</button-primary>
+                    <button-save @click="vibrate();save();"/>
                 </div>
                 <div class="control" v-if="robCourse.id > 0">
                     <button-danger-inverted @click="vibrate();remove();">

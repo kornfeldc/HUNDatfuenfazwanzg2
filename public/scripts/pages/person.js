@@ -102,7 +102,7 @@ const PersonPage = {
         <div class="actions">
             <div class="field is-grouped">
                 <div class="control">
-                    <button-primary @click="vibrate();save();">Speichern</button-primary>
+                    <button-save @click="vibrate();save();"/>
                 </div>
                 <div class="control" v-if="person.isMainPerson">
                     <button-primary-inverted @click="vibrate();addCredit();">Guthaben +/-</button-primary-inverted>
