@@ -178,6 +178,8 @@ const PayPage = {
         },
         async save() {
             var app = this
+            if(app.syncing) return;
+            
             app.syncing = true;
             app.sale.personCreditBefore = app.personCredit;
             app.sale.personCreditAfter = app.newCredit;
