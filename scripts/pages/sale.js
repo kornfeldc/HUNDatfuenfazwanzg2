@@ -213,8 +213,11 @@ const SalePage = {
         async remove() {
             var app = this;
             if(app.$route.params.id !== "_") {
+                if(app.syncing) return;
+                app.syncing = true;
                 await app.$refs.yesNoRemove.open();
                 await app.sale.remove();
+                app.syncing = false;
                 router.push({ path: "/sales" });
             }
             else
@@ -250,6 +253,7 @@ const SalePage = {
         },
         async payAllWithCredit() {
             const app = this;
+            if(app.syncing) return;
             app.syncing = true;
             await app.sale.payAllWithCredit();
             app.syncing=false;
