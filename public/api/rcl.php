@@ -22,13 +22,29 @@ switch($method) {
     case 'POST':
         $link = @$_GET['link'];
         
-        $stmt = $conn->prepare("SELECT rc.id FROM rob_course rc WHERE link=? limit 1");
+        $stmt = $conn->prepare("SELECT rc.id, (select count(*) from rob_course_person rcp where rcp.robCourseId = rc.id) personCount, rc.maxPersons FROM rob_course rc WHERE link=? limit 1");
         $stmt->bind_param('s', $link);
         $stmt->execute();
         $result = $stmt->get_result();
         $value = $result->fetch_object();
+        
+        if(is_null($value)) {
+             header('HTTP/1.1 400 Bad Request');
+             echo json_encode(array('message' => 'Kurs nicht gefunden'));
+             exit();
+        }
+        
         $robCourseId = $value->id;
-
+        $personCount = $value->personCount;
+        $maxPersons = $value->maxPersons;
+        
+        // if personCount is same as maxPersons then return an error, otherwise continiue
+        if ($personCount >= $maxPersons) {
+            header('HTTP/1.1 400 Bad Request');
+            echo json_encode(array('message' => 'Der Kurs ist leider bereits ausgebucht'));
+            exit();
+        }
+        
         $p = array();
         array_push($p,getParameter("robCourseId", "i", $robCourseId));
         array_push($p,getParameter("personName", "s", valueFromPost("personName", "")));

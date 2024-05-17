@@ -85,7 +85,7 @@ new Vue({
                 });
 
                 try {
-                    if(!response) {
+                    if(!response || response.status === 400) {
                         this.registerFailed();
                         return;
                     }
