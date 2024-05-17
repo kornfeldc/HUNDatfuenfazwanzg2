@@ -190,6 +190,7 @@ const SalePage = {
             if(app.sale.isPayed)
                 app.cancel();
             else {
+                if(app.syncing) return;
                 app.syncing = true;
                 await app.sale.save();
                 app.syncing=false;
@@ -198,6 +199,8 @@ const SalePage = {
         },
         async pay(amountJustCredit) {
             var app = this;
+            if(app.syncing) return;
+            
             app.syncing = true;
             var ret = await app.sale.save();
             app.sale.id = ret.id;

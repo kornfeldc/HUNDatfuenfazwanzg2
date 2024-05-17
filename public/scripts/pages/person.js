@@ -140,7 +140,8 @@ const PersonPage = {
                 { id: "credit", shortTitle: "Guthaben aufgeladen" },
                 { id: "sale", shortTitle: "Verkauf" },
             ],
-            history: []
+            history: [],
+            syncing: false
         };
     },
     computed: {
@@ -181,7 +182,11 @@ const PersonPage = {
         },
         async save() {
             const app = this;
+            if(this.syncing) return;
+            
+            this.syncing = true;
             await app.savePerson();
+            this.syncing = false;
             app.back();
         },
         async savePerson() {
